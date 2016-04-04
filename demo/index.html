@@ -1,0 +1,139 @@
+
+
+<html>
+    <head>
+        <title>Ractive-Datepicker Demo</title>
+
+        <meta charset="utf-8">
+
+        <script src='http://cdn.ractivejs.org/edge/ractive.min.js'></script>
+        <link rel='stylesheet' href='css/styles.css'/>
+
+        <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
+
+    </head>
+
+    <body>
+
+
+        <demo></demo>
+
+        <script src='../ractive-datepicker.js'></script>
+
+        <script id='template' type='text/ractive'>
+
+        <h1>Ractive Datepicker</h1>
+
+        <section>
+
+            <h2>Basic usage</h2>
+
+            <p>In your ractive instance:</p>
+
+        <pre>
+            <code>
+    new Ractive({
+        ...
+        components: {
+            datepicker: require('ractive-datepicker')
+        },
+        ...
+    });
+            </code>
+        </pre>
+        <p>In your template:</p>
+        <pre>
+            <code>
+    &lt;datepicker date="\{{date}}"&gt;&lt;/datepicker&gt;
+            </code>
+        </pre>
+
+
+        <div style='margin-top:2em'>
+
+            Result:
+
+            <div style='margin: 1em 0'>
+                <datepicker mode='{{mode}}' date='{{date}}'></datepicker>
+            </div>
+
+            Mode:
+
+            <label>
+                <input name='{{mode}}' type='radio' value='date'>
+                "date"
+            </label>
+
+            <label>
+                <input name='{{mode}}' type='radio' value='datetime'>
+                "datetime"
+            </label>
+
+            <div style='margin-top: 1em'>
+                Selected date: {{date.toLocaleString()}}
+            </div>
+
+
+        </div>
+
+        </section>
+
+        <section>
+            <h2>Responsive</h2>
+
+            <code>ractive-datepicker</code> provides a compact mode that kicks in at 700px
+
+            <p>
+            <datepicker class='compact'></datepicker>
+            </p>
+
+        </section>
+
+        <section>
+            <h2>Styling</h2>
+            <code>ractive-datepicker</code> provides minimal styling, so it can easily be themed as needed
+
+            <div class='dark well'>
+                <datepicker class='dark'>
+                </datepicker>
+            </div>
+
+            <div class=''>
+                <datepicker>
+                </datepicker>
+            </div>
+
+        </section>
+
+        </script>
+
+        <script>
+
+            var main = new Ractive({
+
+                el: 'demo',
+
+                template: '#template',
+
+                data: {
+                    mode: 'datetime'
+                },
+
+                components: {
+                    datepicker:  RactiveDatepicker // don't do globals, kids
+                    //datepicker: require('ractive-datepicker') // use a buildsystem
+                },
+
+                oncomplete: function() {
+                    //debug stuff. Don't do this in production, kids
+                    window.s = this.findComponent('datepicker');
+                }
+
+            })
+
+        </script>
+
+    </body>
+
+</html>
+

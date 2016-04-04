@@ -1,0 +1,86 @@
+body {
+  background: #ebedf1;
+  font-family: 'Lucida Grande', 'Heveltica Nueue', 'Helvetica', 'sans-serif';
+}
+demo {
+  padding: 3em;
+  display: block;
+}
+pre {
+  background: rgba(0,0,0,0.05);
+  border: 1px solid rgba(0,0,0,0.1);
+}
+section + section {
+  margin-top: 2em;
+  border-top: 1px dashed rgba(0,0,0,0.1);
+  padding-top: 2em;
+}
+.dark.well {
+  background: #1a1a1a;
+  color: #ccc;
+  padding: 3em;
+  margin: 1em;
+}
+.dark.well .ractive-datepicker {
+  border: 1px solid #555;
+  background: #3c3c3c;
+}
+.dark.well .ractive-datepicker .header {
+  background: #303030;
+}
+.dark.well .ractive-datepicker .active:after {
+  border-right-color: #3c3c3c;
+}
+.dark.well .ractive-datepicker .dates .active {
+  borderbackground: #6097ec;
+}
+.dark.well .ractive-datepicker .days {
+  color: rgba(255,255,255,0.4);
+}
+.light {
+  border: 1px solid rgba(0,0,0,0.2);
+  padding: 3em;
+  margin: 1em;
+  background: #fff;
+}
+.light .ractive-datepicker {
+  background: #b2dfdb;
+}
+.light .ractive-datepicker .header {
+  background: #00796b;
+}
+.light .ractive-datepicker .active:after {
+  border-right-color: #b2dfdb;
+}
+.light .ractive-datepicker .dates .active {
+  borderbackground: #6097ec;
+}
+.ractive-datepicker.compact {
+  flex-direction: column;
+  font-size: 0.8em;
+}
+.ractive-datepicker.compact .header {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  padding: 1.5em;
+}
+.ractive-datepicker.compact .header .weekday {
+  font-size: 1em;
+}
+.ractive-datepicker.compact .header div {
+  display: inline;
+}
+.ractive-datepicker.compact .header > div {
+  margin-top: 0 !important;
+  margin-right: 1em;
+}
+.ractive-datepicker.compact .header .active:after {
+  border-right-color: transparent;
+  border-bottom-color: #fff;
+  left: 50%;
+  right: auto;
+  bottom: -1.5em;
+  margin-top: 0;
+  margin-left: -10px;
+}

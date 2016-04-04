@@ -1,0 +1,92 @@
+<div class='ractive-datepicker {{class}}'
+     style='{{style}}'>
+
+    <div class='header'>
+
+        {{#if mode == 'date' || mode == 'datetime'}}
+        <div class='year{{#if editing=="year"}} active{{/if}}' on-click='set("editing", "year")'>
+            {{year}}
+        </div>
+
+        <div class='date{{#if editing=="date"}} active{{/if}}' on-click='set("editing", "date")'>
+            <span class='weekday'>{{weekday}},</span>
+            <div>{{month}} {{date.getDate()}}</div>
+        </div>
+        {{/if}}
+
+        {{#if mode == 'time' || mode == 'datetime'}}
+        <div class='time{{#if editing=="time"}} active{{/if}}' on-click='set("editing", "time")'>
+            {{time}}
+        </div>
+        {{/if}}
+    </div>
+
+    <div class='editor'>
+    {{#if editing == 'year'}}
+        <div class='years'>
+            {{#years}}
+                <div {{#if this==year}}class='active'{{/if}} on-click='setYear'>
+                    {{this}}
+                </div>
+            {{/}}
+        </div>
+    {{elseif editing == 'date'}}
+
+        <div class='nav'>
+            <div class='previous' on-click='decrementMonth'></div>
+            <div class='next' on-click='incrementMonth'></div>
+        </div>
+
+        <div class='monthyear'>
+            {{currentMonth}} <span on-click='set("editing", "year")'>{{currentYear}}</span>
+        </div>
+
+        <div class='days'>
+            {{#daysOfWeek}}
+                <div>
+                    {{this}}
+                </div>
+            {{/}}
+        </div>
+
+        <div class='dates'>
+            {{#dates}}
+            <div {{#if date.getFullYear() == current.year &&
+                       date.getMonth() == current.month &&
+                       date.getDate() == this}}class='active'{{/if}}
+                 on-click='setDate'>
+                    {{this}}
+                </div>
+            {{/}}
+        </div>
+
+    {{elseif editing == 'time'}}
+
+        <div class='clock'>
+
+            <div class='hours' on-wheel-touchmove='clockwheel:setHours' decorator='preventOverscroll'>
+                {{#hours}}
+                    <div>{{this}}</div>
+                {{/}}
+            </div>
+            <span class='colon'>:</span>
+            <div class='minutes' on-wheel-touchmove='clockwheel:setMinutes' decorator='preventOverscroll'>
+                {{#minutes}}
+                    <div>{{this < 10 ? '0'+this : this}}</div>
+                {{/}}
+            </div>
+            <div class='meridiem'>
+                <span class='am {{#if meridiem == "am"}}selected{{/if}}' on-click='setMeridiem:am'>
+                    AM
+                </span>
+                <span class='pm {{#if meridiem == "pm"}}selected{{/if}}' on-click='setMeridiem:pm'>
+                    PM
+                </span>
+            </div>
+
+        </div>
+
+    {{/if}}
+    </div>
+
+</div>

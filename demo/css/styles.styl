@@ -1,0 +1,80 @@
+
+body
+    background #ebedf1
+    font-family 'Lucida Grande', 'Heveltica Nueue', 'Helvetica', 'sans-serif'
+
+demo
+    padding 3em
+    display block
+
+pre
+    background rgba(0,0,0,0.05)
+    border 1px solid rgba(0,0,0,0.1)
+
+section
+    & + section
+        margin-top 2em
+        border-top 1px dashed rgba(0,0,0,.1)
+        padding-top 2em
+
+
+.dark.well
+    background #1a1a1a
+    color #ccc
+    padding 3em
+    margin 1em
+
+    .ractive-datepicker
+        border 1px solid #555
+        background #3c3c3c
+        .header
+            background #303030
+           .active:after
+                border-right-color @background
+        .dates .active
+            borderbackground #6097EC
+        .days
+            color fade-out(#fff, 0.6)
+
+
+
+
+.light
+    border 1px solid fade-out(#000, 0.8)
+    padding 3em
+    margin 1em
+    background #fff
+
+    .ractive-datepicker
+        background #B2DFDB
+        .header
+            background #00796B
+           .active:after
+                border-right-color @background
+        .dates .active
+            borderbackground #6097EC
+
+.ractive-datepicker.compact
+    flex-direction column
+    font-size 0.8em
+    .header
+        display flex
+        flex-direction row
+        align-items flex-end
+        padding 1.5em
+        .weekday
+            font-size 1em
+        div
+            display inline
+        > div
+            margin-top 0 !important
+            margin-right 1em
+        .active:after
+            border-right-color transparent
+            border-bottom-color #fff
+            left 50%
+            right auto
+            bottom -1.5em
+            margin-top 0
+            margin-left -10px
+
