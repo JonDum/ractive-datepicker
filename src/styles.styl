@@ -16,6 +16,7 @@
         padding 2em
         min-width 11em
         position relative
+        text-align left
 
         > div
             cursor pointer
@@ -156,10 +157,9 @@
             margin-bottom 10.4em
 
         .meridiem
-            color fade-out(#000, 0.5)
             cursor pointer
-            .selected
-                color #000
+            span:not(.selected)
+                opacity 0.2
 
 
 @media (max-width:700px)
