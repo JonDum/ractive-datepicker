@@ -20,6 +20,7 @@ section + section {
   color: #ccc;
   padding: 3em;
   margin: 1em;
+  text-align: center;
 }
 .dark.well .ractive-datepicker {
   border: 1px solid #555;
@@ -32,28 +33,47 @@ section + section {
   border-right-color: #3c3c3c;
 }
 .dark.well .ractive-datepicker .dates .active {
-  borderbackground: #6097ec;
+  background: #6097ec;
 }
 .dark.well .ractive-datepicker .days {
   color: rgba(255,255,255,0.4);
+}
+.dark.well .ractive-datepicker .years:after {
+  background: linear-gradient(#3c3c3c, rgba(60,60,60,0), #3c3c3c);
+}
+.dark.well .ractive-datepicker .clock:after {
+  background: linear-gradient(#3c3c3c 20%, rgba(60,60,60,0), #3c3c3c 80%);
 }
 .light {
   border: 1px solid rgba(0,0,0,0.2);
   padding: 3em;
   margin: 1em;
   background: #fff;
+  text-align: center;
 }
 .light .ractive-datepicker {
-  background: #b2dfdb;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  color: #333;
 }
 .light .ractive-datepicker .header {
-  background: #00796b;
+  background: #f0f0f0;
+  text-align: right;
+  background: transparent;
+  color: rgba(0,0,0,0.5);
 }
-.light .ractive-datepicker .active:after {
-  border-right-color: #b2dfdb;
+.light .ractive-datepicker .header .active {
+  color: #000;
+  font-weight: bold;
+}
+.light .ractive-datepicker .header .active:after {
+  border: 5px solid transparent;
+  border-left-color: #000;
+  margin-top: -2.5px;
 }
 .light .ractive-datepicker .dates .active {
-  borderbackground: #6097ec;
+  background: #a70072;
 }
 .ractive-datepicker.compact {
   flex-direction: column;

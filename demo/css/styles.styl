@@ -23,6 +23,7 @@ section
     color #ccc
     padding 3em
     margin 1em
+    text-align center
 
     .ractive-datepicker
         border 1px solid #555
@@ -32,9 +33,13 @@ section
            .active:after
                 border-right-color @background
         .dates .active
-            borderbackground #6097EC
+            background #6097EC
         .days
             color fade-out(#fff, 0.6)
+        .years:after
+            background linear-gradient(#3c3c3c,rgba(60, 60, 60, 0),#3c3c3c)
+        .clock:after
+            background linear-gradient(#3c3c3c 20%,rgba(60, 60, 60, 0),#3c3c3c 80%)
 
 
 
@@ -44,15 +49,28 @@ section
     padding 3em
     margin 1em
     background #fff
+    text-align center
 
     .ractive-datepicker
-        background #B2DFDB
+        background #fff
+        border 1px solid #ccc
+        border-radius 10px
+        color #333
         .header
-            background #00796B
-           .active:after
-                border-right-color @background
+            background #f0f0f0
+            text-align right
+            background transparent
+            color fade-out(#000, 0.5)
+            .active
+                color #000
+                font-weight bold
+                &:after
+                    border 5px solid transparent
+                    border-left-color #000
+                    margin-top -2.5px
+
         .dates .active
-            borderbackground #6097EC
+            background #A70072
 
 .ractive-datepicker.compact
     flex-direction column
