@@ -319,13 +319,10 @@ module.exports = Ractive.extend({
         // update scroll positions of clock editors when date changes
         self.observe('date', updateTimeEditors, {init: false});
 
-        var updating = false;
         function updateTimeEditors() {
 
-            if(updating || self.get('editing') !== 'time')
+            if(self.get('editing') !== 'time')
                 return;
-
-            updating = true;
 
             for(var key in animating)
                 if(animating[key])
@@ -333,13 +330,6 @@ module.exports = Ractive.extend({
 
             snap(self.find('.clock .hours'), 'setHours', self.get('hour'));
             snap(self.find('.clock .minutes'), 'setMinutes', self.get('minute'));
-
-            // because two animations are running concurrently
-            // one will end before the other and set the animating flag false
-            // so we need another flag to avoid infinite loop :(
-            setTimeout(function() {
-                updating = false;
-            }, 400);
         }
 
         var debouncedSnap = debounce(snap, 250);
