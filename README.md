@@ -1,7 +1,6 @@
 # ractive-datepicker
 
-
-A replacement for `<datepicker>` tags that allows full styling and customizability.
+![ractive-datepicker](https://zippy.gfycat.com/DizzySecondaryEagle.gif)
 
 ### Demo
 
@@ -31,34 +30,14 @@ Ractive.extend({
 Use it like a normal datepicker element
 
 ```html
-<datepicker value='{{ myValue }}'>
- {{#each options}}
- <option>{{this}}</option>
- {{/each}}
- <option>some other option</option>
+<datepicker date='{{ myValue }}'>
 </datepicker>
 ```
 
-Or if you already have an array:
-
-```html
-<datepicker items='{{options}}'></datepicker>
-```
-
-```js
-...
-data: {
-    // can either be array of primitives
-    items: ["foo", "bar", "baz"],
-
-    // or array of objects with `value` and `label` -> <option value='{{value}}'>{{label}}</option>
-    items: [{label: "foo", value: "_FOO", ...}],
-},
-...
-```
 
 ### TODO
 
-* Keyboard events — Selecting elements via string matching and up/down arrows (PRs welcome)
+* Text Input / Dropdown buttons
+* Period selection
 
 
