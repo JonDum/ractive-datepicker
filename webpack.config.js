@@ -7,7 +7,7 @@ module.exports = {
         filename: 'ractive-datepicker.js',
         library: 'RactiveDatepicker',
         libraryTarget: 'umd',
-        pathinfo: true,
+        sourcePrefix: '    ',
     },
     resolve: {
         root: process.cwd(),
@@ -21,7 +21,7 @@ module.exports = {
         ],
     },
     debug: true,
-    devtool: 'eval',
+    devtool: 'none',
     stylus: {
         use: [(require('nib')())],
     },
