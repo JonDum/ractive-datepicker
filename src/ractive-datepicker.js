@@ -1,8 +1,8 @@
-require('./styles.styl');
-
 
 var win = window;
 var doc = document;
+
+require('./styles.styl');
 
 var localeStringOptions = {
     month: {month: 'long'},
@@ -11,18 +11,8 @@ var localeStringOptions = {
 };
 
 var debounce = require('lodash/debounce');
-var animate = require('util/animate');
+var animate = require('./util/animate');
 var isUndefined = require('lodash/isUndefined');
-
-//var Ractive = require('Ractive');
-
-//TODO remove
-//window.Ractive = Ractive;
-
-if ( !( 'ontouchstart' in window ) ) {
-  //Ractive.events.touchstart = function() {};
-  //Ractive.events.touchmove = function () {};
-}
 
 module.exports = Ractive.extend({
 
@@ -31,7 +21,7 @@ module.exports = Ractive.extend({
     isolated: true,
 
     decorators: {
-        preventOverscroll: require('decorators/prevent-overscroll'),
+        preventOverscroll: require('./decorators/prevent-overscroll'),
     },
 
     data: function() {
