@@ -250,7 +250,7 @@ module.exports = Ractive.extend({
             if(!div)
                 return;
 
-            console.log('snap() ', arguments);
+            //console.log('snap() ', arguments);
 
             var styles = window.getComputedStyle(div);
             var divHeight =  div.offsetHeight + parseFloat(styles.marginBottom);
@@ -287,7 +287,7 @@ module.exports = Ractive.extend({
             animating[method] = animate({
                 duration: 0.3,
                 step: function(p) {
-                    node.scrollTo(0, startY+deltaY*p);
+                    node.scrollTop = startY+deltaY*p;
                 },
                 complete: function() {
                     var date = self.get('date');
@@ -305,7 +305,7 @@ module.exports = Ractive.extend({
 
                     self.set('date', date);
                     animating[method] = false;
-                    console.log('complete: animating=', animating);
+                    //console.log('complete: animating=', animating);
                 }
             });
 
