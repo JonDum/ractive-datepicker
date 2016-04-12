@@ -21,7 +21,7 @@ module.exports = Ractive.extend({
     isolated: true,
 
     decorators: {
-        preventOverscroll: require('./decorators/prevent-overscroll'),
+        preventOverscroll: require('./decorators/prevent-overscroll.js'),
     },
 
     data: function() {
@@ -241,7 +241,7 @@ module.exports = Ractive.extend({
 
             self.set('editing', editing);
 
-        }, {init: false, defer: true});
+        }, {defer: true});
 
 
         /* --------------------- */
@@ -253,6 +253,11 @@ module.exports = Ractive.extend({
         function snap(node, method, value) {
 
             var startY = node.scrollTop;
+
+            // no node, nothing to do
+            if(!node) {
+                return;
+            }
 
             // grab the first div and use to size
             var div = node.querySelector('div');
@@ -284,9 +289,13 @@ module.exports = Ractive.extend({
                 index = Math.round(startY / divHeight);
             }
 
+            if(index >= node.children.length)
+                index = node.children.length - 1;
+
             div = node.children[index];
 
             var endY = div.offsetTop - divHeight - parseFloat(styles.marginTop)/2 - parseFloat(styles.marginBottom)/2;
+            //var endY = divHeight*index + parseFloat(styles.marginBottom)/4;
             var deltaY = endY - startY;
 
             // block the animation on subsequent calls
@@ -325,6 +334,9 @@ module.exports = Ractive.extend({
 
         }
 
+        // needs to be debounced so that the UI is fully updated
+        // defer: true doesn't count it on the obserer
+        updateTimeEditors = debounce(updateTimeEditors, 10);
 
         // update scroll positions of clock editors when first viewed
         self.observe('editing', updateTimeEditors, {init: false, defer:true});
@@ -343,6 +355,7 @@ module.exports = Ractive.extend({
             snap(self.find('.clock .hours'), 'setHours', self.get('hour'));
             snap(self.find('.clock .minutes'), 'setMinutes', self.get('minute'));
         }
+
 
         var debouncedSnap = debounce(snap, 250);
 

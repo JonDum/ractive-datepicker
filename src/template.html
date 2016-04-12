@@ -42,23 +42,26 @@
         </div>
 
         <div class='days'>
-            {{#daysOfWeek}}
-                <div>
-                    {{this}}
-                </div>
-            {{/}}
+            <div class='weekdays'>
+                {{#daysOfWeek}}
+                    <div>
+                        {{this}}
+                    </div>
+                {{/}}
+            </div>
+            <div class='dates'>
+                {{#dates}}
+                <div {{#if date instanceof Date &&
+                           date.getFullYear() == current.year &&
+                           date.getMonth() == current.month &&
+                           date.getDate() == this}}class='active'{{/if}}
+                     on-click='setDate'>
+                        {{this}}
+                    </div>
+                {{/}}
+            </div>
         </div>
 
-        <div class='dates'>
-            {{#dates}}
-            <div {{#if date.getFullYear() == current.year &&
-                       date.getMonth() == current.month &&
-                       date.getDate() == this}}class='active'{{/if}}
-                 on-click='setDate'>
-                    {{this}}
-                </div>
-            {{/}}
-        </div>
 
     {{elseif editing == 'time'}}
 

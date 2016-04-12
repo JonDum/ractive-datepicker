@@ -45,7 +45,6 @@
         padding 2em
         position relative
         user-select none
-        max-height 25em
         .years:after, .clock:after
             position absolute
             content ''
@@ -83,7 +82,11 @@
             &:before
                 content '>'
 
-    .dates, .days
+    .weekdays
+        display flex
+        opacity 0.4
+
+    .dates, .weekdays
         > div
             display inline-block
             width 2em
@@ -96,16 +99,11 @@
 
     .dates
         max-width 21em
+        margin-bottom -0.5em
 
     .years, .clock
         width 21em
         height 21em
-
-    .days
-        width 21em
-        color rgba(0, 0, 0, 0.4)
-        > div
-            margin 0 0.5em
 
     .dates
         .active
@@ -135,6 +133,7 @@
         justify-content center
         align-items center
         overflow hidden
+        line-height 1
         > div
             font-size 1.5em
         .minutes, .hours
@@ -148,17 +147,17 @@
             div
                 user-select none
                 cursor default
-                margin-bottom 0.92em
+                margin-bottom 0.88em
 
         .minutes div:first-child
-            margin-top 10.4em
+            margin-top 11em
         .minutes div:last-child
-            margin-bottom 10.4em
+            margin-bottom 11em
 
         .hours div:first-child
-            margin-top 10.4em
+            margin-top 11em
         .hours div:last-child
-            margin-bottom 10.4em
+            margin-bottom 11em
 
         .meridiem
             cursor pointer
