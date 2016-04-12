@@ -58,11 +58,15 @@ module.exports = Ractive.extend({
         // date computations
 
         year: function() {
-            return this.get('date').getFullYear();
+            var d = this.date();
+            if(d)
+                return d.getFullYear();
         },
 
         month: function() {
-            return this.get('date').toLocaleString(navigator.language, localeStringOptions.month);
+            var d = this.date();
+            if(d)
+                return d.toLocaleString(navigator.language, localeStringOptions.month);
         },
 
         currentMonth: function() {
@@ -75,11 +79,15 @@ module.exports = Ractive.extend({
         },
 
         weekday: function() {
-            return this.get('date').toLocaleString(navigator.language, localeStringOptions.weekday);
+            var d = this.date();
+            if(d)
+                return d.toLocaleString(navigator.language, localeStringOptions.weekday);
         },
 
         meridiem: function() {
-            return this.get('date').getHours() < 12;
+            var d = this.date();
+            if(d)
+                return d.getHours() < 12;
         },
 
         daysOfWeek: function() {
@@ -120,15 +128,21 @@ module.exports = Ractive.extend({
         // time computations
 
         time: function() {
-            return this.get('date').toLocaleTimeString(navigator.language, localeStringOptions.time);
+            var d = this.date();
+            if(d)
+                return d.toLocaleTimeString(navigator.language, localeStringOptions.time);
         },
 
         hour: function() {
-            return this.get('date').getHours();
+            var d = this.date();
+            if(d)
+                return d.getHours();
         },
 
         minute: function() {
-            return this.get('date').getMinutes();
+            var d = this.date();
+            if(d)
+                return d.getMinutes();
         },
 
         // 0 - 60
@@ -138,7 +152,9 @@ module.exports = Ractive.extend({
         },
 
         meridiem: function() {
-            return this.get('date').getHours() < 12 ? 'am' : 'pm';
+            var d = this.date();
+            if(d)
+                return d.getHours() < 12 ? 'am' : 'pm';
         }
 
 
@@ -147,8 +163,14 @@ module.exports = Ractive.extend({
     oninit: function() {
         var self = this;
 
-        // update current
         var date = self.get('date');
+
+        if(!date) {
+            date = new Date();
+            self.set('date', date);
+        }
+
+        // update current
         self.set('current.month', date.getMonth());
         self.set('current.year', date.getFullYear());
 
@@ -337,6 +359,13 @@ module.exports = Ractive.extend({
         });
 
     },
+
+    // prevent computation errors for weird 
+    date: function() {
+        var d = this.get('date');
+        if(d instanceof Date)
+            return d
+    }
 
 });
 
