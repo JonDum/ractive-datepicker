@@ -17,8 +17,8 @@ module.exports = function(node, instance) {
     function preventDefault(e) {
 
         e = e || win.event;
-        if( (node.scrollTop == 0 && e.deltaY < 0) ||
-           (node.scrollTop == contentHeight && e.deltaY > 0) ) {
+        if( (node.scrollTop <= 1 && e.deltaY < 0) ||
+           (node.scrollTop >= contentHeight && e.deltaY > 0) ) {
 
             if (e.preventDefault)
                 e.preventDefault();
@@ -29,7 +29,7 @@ module.exports = function(node, instance) {
 
     function disableScroll() {
         // cache height for perf and avoiding reflow/repaint
-        contentHeight = node.scrollHeight - node.offsetHeight;
+        contentHeight = node.scrollHeight - node.offsetHeight - 1;
 
         win.addEventListener('DOMMouseScroll', preventDefault, false);
         win.addEventListener('wheel', preventDefault); // modern standard
