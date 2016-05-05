@@ -204,9 +204,6 @@ module.exports = Ractive.extend({
         });
 
         self.on('setYear', function(details) {
-            var date = this.get('date');
-            //date.setFullYear(details.context);
-            //self.set('date', date);
             self.set('current.year', details.context);
             self.set('editing', 'date');
         });
