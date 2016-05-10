@@ -23,7 +23,7 @@
 
     <div class='editor'>
     {{#if editing == 'year'}}
-        <div class='years'>
+        <div class='years' on-wheel-touchmove='clockwheel:setYear' decorator='preventOverscroll'>
             {{#years}}
                 <div {{#if this==year}}class='active'{{/if}} on-click='setYear'>
                     {{this}}
