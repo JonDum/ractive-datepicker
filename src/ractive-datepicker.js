@@ -178,7 +178,7 @@ module.exports = Ractive.extend({
             var current = this.get('current');
             current.month--;
             if(current.month < 0) {
-                current.month = 12;
+                current.month = 11;
                 current.year--;
             }
             this.set('current', current);
