@@ -7,11 +7,6 @@ module.exports = function(node, instance) {
     node.addEventListener('mouseenter', disableScroll);
     node.addEventListener('mouseleave', enableScroll);
 
-    //node.addEventListener('wheel', function(e) {
-        //e.stopPropagation();
-    //});
-    //
-
     var contentHeight;
 
     function preventDefault(e) {
@@ -57,11 +52,3 @@ module.exports = function(node, instance) {
 
 
 }
-
-var keys = {
-    37: 1,
-    38: 1,
-    39: 1,
-    40: 1
-};
-
