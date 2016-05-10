@@ -67,17 +67,17 @@ return /******/ (function(modules) { // webpackBootstrap
     };
 
     var debounce = __webpack_require__(5);
-    var animate = __webpack_require__(10);
-    var isUndefined = __webpack_require__(12);
+    var animate = __webpack_require__(12);
+    var isUndefined = __webpack_require__(14);
 
     module.exports = Ractive.extend({
 
-        template: __webpack_require__(13),
+        template: __webpack_require__(15),
 
         isolated: true,
 
         decorators: {
-            preventOverscroll: __webpack_require__(14),
+            preventOverscroll: __webpack_require__(16),
         },
 
         data: function() {
@@ -234,7 +234,7 @@ return /******/ (function(modules) { // webpackBootstrap
                 var current = this.get('current');
                 current.month--;
                 if(current.month < 0) {
-                    current.month = 12;
+                    current.month = 11;
                     current.year--;
                 }
                 this.set('current', current);
@@ -260,9 +260,6 @@ return /******/ (function(modules) { // webpackBootstrap
             });
 
             self.on('setYear', function(details) {
-                var date = this.get('date');
-                //date.setFullYear(details.context);
-                //self.set('date', date);
                 self.set('current.year', details.context);
                 self.set('editing', 'date');
             });
@@ -281,7 +278,8 @@ return /******/ (function(modules) { // webpackBootstrap
                 if(editing == 'year') {
                     var years = self.find('.years');
                     var activeYear = self.find('.years .active');
-                    years.scrollTo(0, activeYear.offsetTop - years.offsetHeight/2);
+                    activeYear.scrollIntoView();
+                    years.scrollTop -= years.offsetHeight / 2 - ( activeYear.offsetHeight / 2 );
                 }
             }, {init: false, defer: true});
 
@@ -559,7 +557,8 @@ return /******/ (function(modules) { // webpackBootstrap
     		return document.head || document.getElementsByTagName("head")[0];
     	}),
     	singletonElement = null,
-    	singletonCounter = 0;
+    	singletonCounter = 0,
+    	styleElementsInsertedAtTop = [];
 
     module.exports = function(list, options) {
     	if(true) {
@@ -570,6 +569,9 @@ return /******/ (function(modules) { // webpackBootstrap
     	// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
     	// tags it will allow on a page
     	if (typeof options.singleton === "undefined") options.singleton = isOldIE();
+
+    	// By default, add <style> tags to the bottom of <head>.
+    	if (typeof options.insertAt === "undefined") options.insertAt = "bottom";
 
     	var styles = listToStyles(list);
     	addStylesToDom(styles, options);
@@ -637,19 +639,44 @@ return /******/ (function(modules) { // webpackBootstrap
     	return styles;
     }
 
-    function createStyleElement() {
-    	var styleElement = document.createElement("style");
+    function insertStyleElement(options, styleElement) {
     	var head = getHeadElement();
+    	var lastStyleElementInsertedAtTop = styleElementsInsertedAtTop[styleElementsInsertedAtTop.length - 1];
+    	if (options.insertAt === "top") {
+    		if(!lastStyleElementInsertedAtTop) {
+    			head.insertBefore(styleElement, head.firstChild);
+    		} else if(lastStyleElementInsertedAtTop.nextSibling) {
+    			head.insertBefore(styleElement, lastStyleElementInsertedAtTop.nextSibling);
+    		} else {
+    			head.appendChild(styleElement);
+    		}
+    		styleElementsInsertedAtTop.push(styleElement);
+    	} else if (options.insertAt === "bottom") {
+    		head.appendChild(styleElement);
+    	} else {
+    		throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");
+    	}
+    }
+
+    function removeStyleElement(styleElement) {
+    	styleElement.parentNode.removeChild(styleElement);
+    	var idx = styleElementsInsertedAtTop.indexOf(styleElement);
+    	if(idx >= 0) {
+    		styleElementsInsertedAtTop.splice(idx, 1);
+    	}
+    }
+
+    function createStyleElement(options) {
+    	var styleElement = document.createElement("style");
     	styleElement.type = "text/css";
-    	head.appendChild(styleElement);
+    	insertStyleElement(options, styleElement);
     	return styleElement;
     }
 
-    function createLinkElement() {
+    function createLinkElement(options) {
     	var linkElement = document.createElement("link");
-    	var head = getHeadElement();
     	linkElement.rel = "stylesheet";
-    	head.appendChild(linkElement);
+    	insertStyleElement(options, linkElement);
     	return linkElement;
     }
 
@@ -658,7 +685,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
     	if (options.singleton) {
     		var styleIndex = singletonCounter++;
-    		styleElement = singletonElement || (singletonElement = createStyleElement());
+    		styleElement = singletonElement || (singletonElement = createStyleElement(options));
     		update = applyToSingletonTag.bind(null, styleElement, styleIndex, false);
     		remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true);
     	} else if(obj.sourceMap &&
@@ -667,18 +694,18 @@ return /******/ (function(modules) { // webpackBootstrap
     		typeof URL.revokeObjectURL === "function" &&
     		typeof Blob === "function" &&
     		typeof btoa === "function") {
-    		styleElement = createLinkElement();
+    		styleElement = createLinkElement(options);
     		update = updateLink.bind(null, styleElement);
     		remove = function() {
-    			styleElement.parentNode.removeChild(styleElement);
+    			removeStyleElement(styleElement);
     			if(styleElement.href)
     				URL.revokeObjectURL(styleElement.href);
     		};
     	} else {
-    		styleElement = createStyleElement();
+    		styleElement = createStyleElement(options);
     		update = applyToTag.bind(null, styleElement);
     		remove = function() {
-    			styleElement.parentNode.removeChild(styleElement);
+    			removeStyleElement(styleElement);
     		};
     	}
 
@@ -724,7 +751,6 @@ return /******/ (function(modules) { // webpackBootstrap
     function applyToTag(styleElement, obj) {
     	var css = obj.css;
     	var media = obj.media;
-    	var sourceMap = obj.sourceMap;
 
     	if(media) {
     		styleElement.setAttribute("media", media)
@@ -742,7 +768,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
     function updateLink(linkElement, obj) {
     	var css = obj.css;
-    	var media = obj.media;
     	var sourceMap = obj.sourceMap;
 
     	if(sourceMap) {
@@ -773,7 +798,8 @@ return /******/ (function(modules) { // webpackBootstrap
     var FUNC_ERROR_TEXT = 'Expected a function';
 
     /* Built-in method references for those with the same name as other `lodash` methods. */
-    var nativeMax = Math.max;
+    var nativeMax = Math.max,
+        nativeMin = Math.min;
 
     /**
      * Creates a debounced function that delays invoking `func` until after `wait`
@@ -789,21 +815,22 @@ return /******/ (function(modules) { // webpackBootstrap
      * on the trailing edge of the timeout only if the debounced function is
      * invoked more than once during the `wait` timeout.
      *
-     * See [David Corbacho's article](http://drupalmotion.com/article/debounce-and-throttle-visual-explanation)
+     * See [David Corbacho's article](https://css-tricks.com/debouncing-throttling-explained-examples/)
      * for details over the differences between `_.debounce` and `_.throttle`.
      *
      * @static
      * @memberOf _
+     * @since 0.1.0
      * @category Function
      * @param {Function} func The function to debounce.
      * @param {number} [wait=0] The number of milliseconds to delay.
-     * @param {Object} [options] The options object.
-     * @param {boolean} [options.leading=false] Specify invoking on the leading
-     *  edge of the timeout.
-     * @param {number} [options.maxWait] The maximum time `func` is allowed to be
-     *  delayed before it's invoked.
-     * @param {boolean} [options.trailing=true] Specify invoking on the trailing
-     *  edge of the timeout.
+     * @param {Object} [options={}] The options object.
+     * @param {boolean} [options.leading=false]
+     *  Specify invoking on the leading edge of the timeout.
+     * @param {number} [options.maxWait]
+     *  The maximum time `func` is allowed to be delayed before it's invoked.
+     * @param {boolean} [options.trailing=true]
+     *  Specify invoking on the trailing edge of the timeout.
      * @returns {Function} Returns the new debounced function.
      * @example
      *
@@ -825,16 +852,15 @@ return /******/ (function(modules) { // webpackBootstrap
      * jQuery(window).on('popstate', debounced.cancel);
      */
     function debounce(func, wait, options) {
-      var args,
-          maxTimeoutId,
+      var lastArgs,
+          lastThis,
+          maxWait,
           result,
-          stamp,
-          thisArg,
-          timeoutId,
-          trailingCall,
-          lastCalled = 0,
+          timerId,
+          lastCallTime = 0,
+          lastInvokeTime = 0,
           leading = false,
-          maxWait = false,
+          maxing = false,
           trailing = true;
 
       if (typeof func != 'function') {
@@ -843,96 +869,104 @@ return /******/ (function(modules) { // webpackBootstrap
       wait = toNumber(wait) || 0;
       if (isObject(options)) {
         leading = !!options.leading;
-        maxWait = 'maxWait' in options && nativeMax(toNumber(options.maxWait) || 0, wait);
+        maxing = 'maxWait' in options;
+        maxWait = maxing ? nativeMax(toNumber(options.maxWait) || 0, wait) : maxWait;
         trailing = 'trailing' in options ? !!options.trailing : trailing;
       }
 
-      function cancel() {
-        if (timeoutId) {
-          clearTimeout(timeoutId);
-        }
-        if (maxTimeoutId) {
-          clearTimeout(maxTimeoutId);
-        }
-        lastCalled = 0;
-        args = maxTimeoutId = thisArg = timeoutId = trailingCall = undefined;
-      }
+      function invokeFunc(time) {
+        var args = lastArgs,
+            thisArg = lastThis;
 
-      function complete(isCalled, id) {
-        if (id) {
-          clearTimeout(id);
-        }
-        maxTimeoutId = timeoutId = trailingCall = undefined;
-        if (isCalled) {
-          lastCalled = now();
-          result = func.apply(thisArg, args);
-          if (!timeoutId && !maxTimeoutId) {
-            args = thisArg = undefined;
-          }
-        }
-      }
-
-      function delayed() {
-        var remaining = wait - (now() - stamp);
-        if (remaining <= 0 || remaining > wait) {
-          complete(trailingCall, maxTimeoutId);
-        } else {
-          timeoutId = setTimeout(delayed, remaining);
-        }
-      }
-
-      function flush() {
-        if ((timeoutId && trailingCall) || (maxTimeoutId && trailing)) {
-          result = func.apply(thisArg, args);
-        }
-        cancel();
+        lastArgs = lastThis = undefined;
+        lastInvokeTime = time;
+        result = func.apply(thisArg, args);
         return result;
       }
 
-      function maxDelayed() {
-        complete(trailing, timeoutId);
+      function leadingEdge(time) {
+        // Reset any `maxWait` timer.
+        lastInvokeTime = time;
+        // Start the timer for the trailing edge.
+        timerId = setTimeout(timerExpired, wait);
+        // Invoke the leading edge.
+        return leading ? invokeFunc(time) : result;
+      }
+
+      function remainingWait(time) {
+        var timeSinceLastCall = time - lastCallTime,
+            timeSinceLastInvoke = time - lastInvokeTime,
+            result = wait - timeSinceLastCall;
+
+        return maxing ? nativeMin(result, maxWait - timeSinceLastInvoke) : result;
+      }
+
+      function shouldInvoke(time) {
+        var timeSinceLastCall = time - lastCallTime,
+            timeSinceLastInvoke = time - lastInvokeTime;
+
+        // Either this is the first call, activity has stopped and we're at the
+        // trailing edge, the system time has gone backwards and we're treating
+        // it as the trailing edge, or we've hit the `maxWait` limit.
+        return (!lastCallTime || (timeSinceLastCall >= wait) ||
+          (timeSinceLastCall < 0) || (maxing && timeSinceLastInvoke >= maxWait));
+      }
+
+      function timerExpired() {
+        var time = now();
+        if (shouldInvoke(time)) {
+          return trailingEdge(time);
+        }
+        // Restart the timer.
+        timerId = setTimeout(timerExpired, remainingWait(time));
+      }
+
+      function trailingEdge(time) {
+        clearTimeout(timerId);
+        timerId = undefined;
+
+        // Only invoke if we have `lastArgs` which means `func` has been
+        // debounced at least once.
+        if (trailing && lastArgs) {
+          return invokeFunc(time);
+        }
+        lastArgs = lastThis = undefined;
+        return result;
+      }
+
+      function cancel() {
+        if (timerId !== undefined) {
+          clearTimeout(timerId);
+        }
+        lastCallTime = lastInvokeTime = 0;
+        lastArgs = lastThis = timerId = undefined;
+      }
+
+      function flush() {
+        return timerId === undefined ? result : trailingEdge(now());
       }
 
       function debounced() {
-        args = arguments;
-        stamp = now();
-        thisArg = this;
-        trailingCall = trailing && (timeoutId || !leading);
+        var time = now(),
+            isInvoking = shouldInvoke(time);
 
-        if (maxWait === false) {
-          var leadingCall = leading && !timeoutId;
-        } else {
-          if (!lastCalled && !maxTimeoutId && !leading) {
-            lastCalled = stamp;
+        lastArgs = arguments;
+        lastThis = this;
+        lastCallTime = time;
+
+        if (isInvoking) {
+          if (timerId === undefined) {
+            return leadingEdge(lastCallTime);
           }
-          var remaining = maxWait - (stamp - lastCalled);
-
-          var isCalled = (remaining <= 0 || remaining > maxWait) &&
-            (leading || maxTimeoutId);
-
-          if (isCalled) {
-            if (maxTimeoutId) {
-              maxTimeoutId = clearTimeout(maxTimeoutId);
-            }
-            lastCalled = stamp;
-            result = func.apply(thisArg, args);
-          }
-          else if (!maxTimeoutId) {
-            maxTimeoutId = setTimeout(maxDelayed, remaining);
+          if (maxing) {
+            // Handle invocations in a tight loop.
+            clearTimeout(timerId);
+            timerId = setTimeout(timerExpired, wait);
+            return invokeFunc(lastCallTime);
           }
         }
-        if (isCalled && timeoutId) {
-          timeoutId = clearTimeout(timeoutId);
-        }
-        else if (!timeoutId && wait !== maxWait) {
-          timeoutId = setTimeout(delayed, wait);
-        }
-        if (leadingCall) {
-          isCalled = true;
-          result = func.apply(thisArg, args);
-        }
-        if (isCalled && !timeoutId && !maxTimeoutId) {
-          args = thisArg = undefined;
+        if (timerId === undefined) {
+          timerId = setTimeout(timerExpired, wait);
         }
         return result;
       }
@@ -949,11 +983,13 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports) {
 
     /**
-     * Checks if `value` is the [language type](https://es5.github.io/#x8) of `Object`.
-     * (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
+     * Checks if `value` is the
+     * [language type](http://www.ecma-international.org/ecma-262/6.0/#sec-ecmascript-language-types)
+     * of `Object`. (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
      *
      * @static
      * @memberOf _
+     * @since 0.1.0
      * @category Lang
      * @param {*} value The value to check.
      * @returns {boolean} Returns `true` if `value` is an object, else `false`.
@@ -989,6 +1025,7 @@ return /******/ (function(modules) { // webpackBootstrap
      *
      * @static
      * @memberOf _
+     * @since 2.4.0
      * @type {Function}
      * @category Date
      * @returns {number} Returns the timestamp.
@@ -997,7 +1034,7 @@ return /******/ (function(modules) { // webpackBootstrap
      * _.defer(function(stamp) {
      *   console.log(_.now() - stamp);
      * }, _.now());
-     * // => logs the number of milliseconds it took for the deferred function to be invoked
+     * // => Logs the number of milliseconds it took for the deferred function to be invoked.
      */
     var now = Date.now;
 
@@ -1009,7 +1046,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
     var isFunction = __webpack_require__(9),
-        isObject = __webpack_require__(6);
+        isObject = __webpack_require__(6),
+        isSymbol = __webpack_require__(10);
 
     /** Used as references for various `Number` constants. */
     var NAN = 0 / 0;
@@ -1034,13 +1072,14 @@ return /******/ (function(modules) { // webpackBootstrap
      *
      * @static
      * @memberOf _
+     * @since 4.0.0
      * @category Lang
      * @param {*} value The value to process.
      * @returns {number} Returns the number.
      * @example
      *
-     * _.toNumber(3);
-     * // => 3
+     * _.toNumber(3.2);
+     * // => 3.2
      *
      * _.toNumber(Number.MIN_VALUE);
      * // => 5e-324
@@ -1048,10 +1087,16 @@ return /******/ (function(modules) { // webpackBootstrap
      * _.toNumber(Infinity);
      * // => Infinity
      *
-     * _.toNumber('3');
-     * // => 3
+     * _.toNumber('3.2');
+     * // => 3.2
      */
     function toNumber(value) {
+      if (typeof value == 'number') {
+        return value;
+      }
+      if (isSymbol(value)) {
+        return NAN;
+      }
       if (isObject(value)) {
         var other = isFunction(value.valueOf) ? value.valueOf() : value;
         value = isObject(other) ? (other + '') : other;
@@ -1083,7 +1128,8 @@ return /******/ (function(modules) { // webpackBootstrap
     var objectProto = Object.prototype;
 
     /**
-     * Used to resolve the [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
+     * Used to resolve the
+     * [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
      * of values.
      */
     var objectToString = objectProto.toString;
@@ -1093,9 +1139,11 @@ return /******/ (function(modules) { // webpackBootstrap
      *
      * @static
      * @memberOf _
+     * @since 0.1.0
      * @category Lang
      * @param {*} value The value to check.
-     * @returns {boolean} Returns `true` if `value` is correctly classified, else `false`.
+     * @returns {boolean} Returns `true` if `value` is correctly classified,
+     *  else `false`.
      * @example
      *
      * _.isFunction(_);
@@ -1106,8 +1154,8 @@ return /******/ (function(modules) { // webpackBootstrap
      */
     function isFunction(value) {
       // The use of `Object#toString` avoids issues with the `typeof` operator
-      // in Safari 8 which returns 'object' for typed array constructors, and
-      // PhantomJS 1.9 which returns 'function' for `NodeList` instances.
+      // in Safari 8 which returns 'object' for typed array and weak map constructors,
+      // and PhantomJS 1.9 which returns 'function' for `NodeList` instances.
       var tag = isObject(value) ? objectToString.call(value) : '';
       return tag == funcTag || tag == genTag;
     }
@@ -1119,9 +1167,89 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
+    var isObjectLike = __webpack_require__(11);
+
+    /** `Object#toString` result references. */
+    var symbolTag = '[object Symbol]';
+
+    /** Used for built-in method references. */
+    var objectProto = Object.prototype;
+
+    /**
+     * Used to resolve the
+     * [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
+     * of values.
+     */
+    var objectToString = objectProto.toString;
+
+    /**
+     * Checks if `value` is classified as a `Symbol` primitive or object.
+     *
+     * @static
+     * @memberOf _
+     * @since 4.0.0
+     * @category Lang
+     * @param {*} value The value to check.
+     * @returns {boolean} Returns `true` if `value` is correctly classified,
+     *  else `false`.
+     * @example
+     *
+     * _.isSymbol(Symbol.iterator);
+     * // => true
+     *
+     * _.isSymbol('abc');
+     * // => false
+     */
+    function isSymbol(value) {
+      return typeof value == 'symbol' ||
+        (isObjectLike(value) && objectToString.call(value) == symbolTag);
+    }
+
+    module.exports = isSymbol;
+
+
+/***/ },
+/* 11 */
+/***/ function(module, exports) {
+
+    /**
+     * Checks if `value` is object-like. A value is object-like if it's not `null`
+     * and has a `typeof` result of "object".
+     *
+     * @static
+     * @memberOf _
+     * @since 4.0.0
+     * @category Lang
+     * @param {*} value The value to check.
+     * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
+     * @example
+     *
+     * _.isObjectLike({});
+     * // => true
+     *
+     * _.isObjectLike([1, 2, 3]);
+     * // => true
+     *
+     * _.isObjectLike(_.noop);
+     * // => false
+     *
+     * _.isObjectLike(null);
+     * // => false
+     */
+    function isObjectLike(value) {
+      return !!value && typeof value == 'object';
+    }
+
+    module.exports = isObjectLike;
+
+
+/***/ },
+/* 12 */
+/***/ function(module, exports, __webpack_require__) {
+
     
     //default ease from ease.js
-    var ease = __webpack_require__(11);
+    var ease = __webpack_require__(13);
 
     /**
      * Simple and easy RAF animation function
@@ -1195,7 +1323,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 11 */
+/* 13 */
 /***/ function(module, exports) {
 
     function qinticInOut(t) {
@@ -1206,13 +1334,14 @@ return /******/ (function(modules) { // webpackBootstrap
     module.exports = qinticInOut
 
 /***/ },
-/* 12 */
+/* 14 */
 /***/ function(module, exports) {
 
     /**
      * Checks if `value` is `undefined`.
      *
      * @static
+     * @since 0.1.0
      * @memberOf _
      * @category Lang
      * @param {*} value The value to check.
@@ -1233,13 +1362,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 13 */
+/* 15 */
 /***/ function(module, exports) {
 
     module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":["ractive-datepicker ",{"t":2,"r":"class"}],"style":[{"t":2,"r":"style"}]},"f":[{"t":7,"e":"div","a":{"class":"header"},"f":[{"t":4,"f":[{"t":7,"e":"div","a":{"class":["year",{"t":4,"f":[" active"],"n":50,"x":{"r":["editing"],"s":"_0==\"year\""}}]},"v":{"click":{"m":"set","a":{"r":[],"s":"[\"editing\",\"year\"]"}}},"f":[{"t":2,"r":"year"}]}," ",{"t":7,"e":"div","a":{"class":["date",{"t":4,"f":[" active"],"n":50,"x":{"r":["editing"],"s":"_0==\"date\""}}]},"v":{"click":{"m":"set","a":{"r":[],"s":"[\"editing\",\"date\"]"}}},"f":[{"t":7,"e":"span","a":{"class":"weekday"},"f":[{"t":2,"r":"weekday"},","]}," ",{"t":7,"e":"div","f":[{"t":2,"r":"month"}," ",{"t":2,"x":{"r":["date"],"s":"_0.getDate()"}}]}]}],"n":50,"x":{"r":["mode"],"s":"_0==\"date\"||_0==\"datetime\""}}," ",{"t":4,"f":[{"t":7,"e":"div","a":{"class":["time",{"t":4,"f":[" active"],"n":50,"x":{"r":["editing"],"s":"_0==\"time\""}}]},"v":{"click":{"m":"set","a":{"r":[],"s":"[\"editing\",\"time\"]"}}},"f":[{"t":2,"r":"time"}]}],"n":50,"x":{"r":["mode"],"s":"_0==\"time\"||_0==\"datetime\""}}]}," ",{"t":7,"e":"div","a":{"class":"editor"},"f":[{"t":4,"f":[{"t":7,"e":"div","a":{"class":"years"},"f":[{"t":4,"f":[{"t":7,"e":"div","m":[{"t":4,"f":["class='active'"],"n":50,"x":{"r":[".","year"],"s":"_0==_1"}}],"v":{"click":"setYear"},"f":[{"t":2,"r":"."}]}],"r":"years"}]}],"n":50,"x":{"r":["editing"],"s":"_0==\"year\""}},{"t":4,"n":51,"f":[{"t":4,"n":50,"x":{"r":["editing"],"s":"_0==\"date\""},"f":[{"t":7,"e":"div","a":{"class":"nav"},"f":[{"t":7,"e":"div","a":{"class":"previous"},"v":{"click":"decrementMonth"}}," ",{"t":7,"e":"div","a":{"class":"next"},"v":{"click":"incrementMonth"}}]}," ",{"t":7,"e":"div","a":{"class":"monthyear"},"f":[{"t":2,"r":"currentMonth"}," ",{"t":7,"e":"span","v":{"click":{"m":"set","a":{"r":[],"s":"[\"editing\",\"year\"]"}}},"f":[{"t":2,"r":"currentYear"}]}]}," ",{"t":7,"e":"div","a":{"class":"days"},"f":[{"t":7,"e":"div","a":{"class":"weekdays"},"f":[{"t":4,"f":[{"t":7,"e":"div","f":[{"t":2,"r":"."}]}],"r":"daysOfWeek"}]}," ",{"t":7,"e":"div","a":{"class":"dates"},"f":[{"t":4,"f":[{"t":7,"e":"div","m":[{"t":4,"f":["class='active'"],"n":50,"x":{"r":["current.year","current.month","date","."],"s":"_2 instanceof Date&&_2.getFullYear()==_0&&_2.getMonth()==_1&&_2.getDate()==_3"}}],"v":{"click":"setDate"},"f":[{"t":2,"r":"."}]}],"r":"dates"}]}]}]},{"t":4,"n":50,"x":{"r":["editing"],"s":"(!(_0==\"date\"))&&(_0==\"time\")"},"f":[" ",{"t":7,"e":"div","a":{"class":"clock"},"f":[{"t":7,"e":"div","a":{"class":"hours"},"v":{"wheel-touchmove":{"n":"clockwheel","a":"setHours"}},"o":"preventOverscroll","f":[{"t":4,"f":[{"t":7,"e":"div","f":[{"t":2,"r":"."}]}],"r":"hours"}]}," ",{"t":7,"e":"span","a":{"class":"colon"},"f":[":"]}," ",{"t":7,"e":"div","a":{"class":"minutes"},"v":{"wheel-touchmove":{"n":"clockwheel","a":"setMinutes"}},"o":"preventOverscroll","f":[{"t":4,"f":[{"t":7,"e":"div","f":[{"t":2,"x":{"r":["."],"s":"_0<10?\"0\"+_0:_0"}}]}],"r":"minutes"}]}," ",{"t":7,"e":"div","a":{"class":"meridiem"},"f":[{"t":7,"e":"span","a":{"class":["am ",{"t":4,"f":["selected"],"n":50,"x":{"r":["meridiem"],"s":"_0==\"am\""}}]},"v":{"click":{"n":"setMeridiem","a":"am"}},"f":["AM"]}," ",{"t":7,"e":"span","a":{"class":["pm ",{"t":4,"f":["selected"],"n":50,"x":{"r":["meridiem"],"s":"_0==\"pm\""}}]},"v":{"click":{"n":"setMeridiem","a":"pm"}},"f":["PM"]}]}]}]}],"x":{"r":["editing"],"s":"_0==\"year\""}}]}]}]};
 
 /***/ },
-/* 14 */
+/* 16 */
 /***/ function(module, exports) {
 
     
@@ -1250,11 +1379,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
         node.addEventListener('mouseenter', disableScroll);
         node.addEventListener('mouseleave', enableScroll);
-
-        //node.addEventListener('wheel', function(e) {
-            //e.stopPropagation();
-        //});
-        //
 
         var contentHeight;
 
@@ -1301,14 +1425,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
     }
-
-    var keys = {
-        37: 1,
-        38: 1,
-        39: 1,
-        40: 1
-    };
-
 
 
 /***/ }
