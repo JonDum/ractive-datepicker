@@ -1,30 +1,36 @@
-
 var win = window;
 var doc = document;
 
-require('./styles.styl');
+require( './styles.styl' );
 
 var localeStringOptions = {
-    month: {month: 'long'},
-    weekday: {weekday: 'short'},
-    time: {hour: '2-digit', minute:'2-digit'},
+    month: {
+        month: 'long'
+    },
+    weekday: {
+        weekday: 'short'
+    },
+    time: {
+        hour: '2-digit',
+        minute: '2-digit'
+    },
 };
 
-var debounce = require('lodash/debounce');
-var animate = require('./util/animate');
-var isUndefined = require('lodash/isUndefined');
+var debounce = require( 'lodash/debounce' );
+var animate = require( './util/animate' );
+var isUndefined = require( 'lodash/isUndefined' );
 
-module.exports = Ractive.extend({
+module.exports = Ractive.extend( {
 
-    template: require('./template.html'),
+    template: require( './template.html' ),
 
     isolated: true,
 
     decorators: {
-        preventOverscroll: require('./decorators/prevent-overscroll.js'),
+        preventOverscroll: require( './decorators/prevent-overscroll.js' ),
     },
 
-    data: function() {
+    data: function () {
         return {
 
             // the selected date
@@ -41,14 +47,16 @@ module.exports = Ractive.extend({
 
             format: '',
 
-            years: Array.apply(0, Array(201)).map(function(a,i){ return 1900+i }),
-            hours: [12,1,2,3,4,5,6,7,8,9,10,11],
+            years: Array.apply( 0, Array( 201 ) ).map( function ( a, i ) {
+                return 1900 + i
+            } ),
+            hours: [ 12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 ],
 
             /**
-            * Increment minutes by this interval when setting time.
-            * @default 1
-            * @type integer
-            */
+             * Increment minutes by this interval when setting time.
+             * @default 1
+             * @type integer
+             */
             minuteIncrement: 1,
         }
     },
@@ -57,68 +65,68 @@ module.exports = Ractive.extend({
 
         // date computations
 
-        year: function() {
+        year: function () {
             var d = this.date();
-            if(d)
+            if ( d )
                 return d.getFullYear();
         },
 
-        month: function() {
+        month: function () {
             var d = this.date();
-            if(d)
-                return d.toLocaleString(navigator.language, localeStringOptions.month);
+            if ( d )
+                return d.toLocaleString( navigator.language, localeStringOptions.month );
         },
 
-        currentMonth: function() {
-            var current = this.get('current');
-            return new Date(current.year, current.month).toLocaleString(navigator.language, localeStringOptions.month);
+        currentMonth: function () {
+            var current = this.get( 'current' );
+            return new Date( current.year, current.month ).toLocaleString( navigator.language, localeStringOptions.month );
         },
 
-        currentYear: function() {
-            return this.get('current.year');
+        currentYear: function () {
+            return this.get( 'current.year' );
         },
 
-        weekday: function() {
+        weekday: function () {
             var d = this.date();
-            if(d)
-                return d.toLocaleString(navigator.language, localeStringOptions.weekday);
+            if ( d )
+                return d.toLocaleString( navigator.language, localeStringOptions.weekday );
         },
 
-        meridiem: function() {
+        meridiem: function () {
             var d = this.date();
-            if(d)
+            if ( d )
                 return d.getHours() < 12;
         },
 
-        daysOfWeek: function() {
+        daysOfWeek: function () {
 
-            var dow = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+            var dow = [ 'S', 'M', 'T', 'W', 'T', 'F', 'S' ];
 
-            var firstDayOfWeek = this.get('firstDayOfWeek'); // default 0, Sunday, configurable
+            var firstDayOfWeek = this.get( 'firstDayOfWeek' ); // default 0, Sunday, configurable
 
-            if (firstDayOfWeek > 0 && firstDayOfWeek < 7) {
-                return Array.prototype.concat(dow.slice(firstDayOfWeek), dow.slice(0, firstDayOfWeek));
+            if ( firstDayOfWeek > 0 && firstDayOfWeek < 7 ) {
+                return Array.prototype.concat( dow.slice( firstDayOfWeek ), dow.slice( 0, firstDayOfWeek ) );
             }
 
             return dow;
         },
 
-        dates: function() {
+        dates: function () {
 
-            var current = this.get('current');
-            var totalDays = new Date(current.year, current.month, 0).getDate(); // of month
-            var firstDayOfMonth = new Date(current.year, current.month, 1).getDay(); // day of week the 1st is on
-            var firstDayOfWeek = this.get('firstDayOfWeek'); // default 0, Sunday, configurable
+            var current = this.get( 'current' );
+            var totalDays = new Date( current.year, current.month, 0 ).getDate(); // of month
+            var firstDayOfMonth = new Date( current.year, current.month, 1 ).getDay(); // day of week the 1st is on
+            var firstDayOfWeek = this.get( 'firstDayOfWeek' ); // default 0, Sunday, configurable
 
             var days = [];
 
-            if (firstDayOfWeek > 0 && firstDayOfWeek < 7) {
+            if ( firstDayOfWeek > 0 && firstDayOfWeek < 7 ) {
                 firstDayOfMonth = firstDayOfMonth - firstDayOfWeek;
-                firstDayOfMonth = firstDayOfMonth < 0 ? 7  + firstDayOfMonth : firstDayOfMonth;
+                firstDayOfMonth = firstDayOfMonth < 0 ? 7 + firstDayOfMonth : firstDayOfMonth;
             }
 
-            for (var i = 0, j = 1 - firstDayOfMonth; i < 42; i++, j++)
-                days.push((i >= firstDayOfMonth & i < firstDayOfMonth + totalDays ? j : ' '));
+            for ( var i = 0, j = 1 - firstDayOfMonth; i < 42; i++, j++ )
+                days.push( ( i >= firstDayOfMonth & i < firstDayOfMonth + totalDays ? j : ' ' ) );
 
             return days;
 
@@ -127,40 +135,42 @@ module.exports = Ractive.extend({
 
         // time computations
 
-        time: function() {
+        time: function () {
             var d = this.date();
-            if(d)
-                return d.toLocaleTimeString(navigator.language, localeStringOptions.time);
+            if ( d )
+                return d.toLocaleTimeString( navigator.language, localeStringOptions.time );
         },
 
-        hour: function() {
+        hour: function () {
             var d = this.date();
-            if(d)
+            if ( d )
                 return d.getHours();
         },
 
-        minute: function() {
+        minute: function () {
             var d = this.date();
-            if(d)
+            if ( d )
                 return d.getMinutes();
         },
 
         // 0 - 60
-        minutes: function() {
-            var n = this.get('minuteIncrement');
-            return Array.apply(0, Array(60/n)).map(function(a,i){ return n*i });
+        minutes: function () {
+            var n = this.get( 'minuteIncrement' );
+            return Array.apply( 0, Array( 60 / n ) ).map( function ( a, i ) {
+                return n * i
+            } );
         },
 
-        meridiem: function() {
+        meridiem: function () {
             var d = this.date();
-            if(d)
+            if ( d )
                 return d.getHours() < 12 ? 'am' : 'pm';
         }
 
 
     },
 
-    oninit: function() {
+    oninit: function () {
         var self = this;
 
         var date = self.get( 'date' );
@@ -391,11 +401,10 @@ module.exports = Ractive.extend({
     },
 
     // prevent computation errors for weird 
-    date: function() {
-        var d = this.get('date');
-        if(d instanceof Date)
+    date: function () {
+        var d = this.get( 'date' );
+        if ( d instanceof Date )
             return d
     }
 
-});
-
+} );
