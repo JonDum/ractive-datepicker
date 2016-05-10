@@ -225,7 +225,8 @@ module.exports = Ractive.extend({
             if(editing == 'year') {
                 var years = self.find('.years');
                 var activeYear = self.find('.years .active');
-                years.scrollTo(0, activeYear.offsetTop - years.offsetHeight/2);
+                activeYear.scrollIntoView();
+                years.scrollTop -= years.offsetHeight / 2 - ( activeYear.offsetHeight / 2 );
             }
         }, {init: false, defer: true});
 
