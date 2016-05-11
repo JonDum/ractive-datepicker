@@ -23,7 +23,6 @@
         "src",
         "demo",
         "Gruntfile.js",
-        "bower.json",
         "package.json",
         "webpack.config.js"
     ]
