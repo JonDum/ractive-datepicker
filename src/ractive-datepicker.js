@@ -1,6 +1,3 @@
-var win = window;
-var doc = document;
-
 require( './styles.styl' );
 
 var localeStringOptions = {
@@ -367,7 +364,7 @@ module.exports = Ractive.extend( {
             }
 
             for ( var key in animating ) {
-                if ( animating[ key ].animating == true || animating[ key ].lastValue == cur[ key ] ) {
+                if ( animating[ key ].animating === true || animating[ key ].lastValue == cur[ key ] ) {
                     return;
                 }
             }
@@ -388,7 +385,6 @@ module.exports = Ractive.extend( {
         var debouncedSnap = debounce( snap, 250 );
 
         self.on( 'clockwheel', function ( details, method ) {
-            var event = details.original;
             for ( var key in animating )
                 if ( animating[ key ].cancel )
                     animating[ key ].cancel()

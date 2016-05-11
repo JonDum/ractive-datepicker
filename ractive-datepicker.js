@@ -54,33 +54,36 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-    
-    var win = window;
-    var doc = document;
-
-    __webpack_require__(1);
+    __webpack_require__( 1 );
 
     var localeStringOptions = {
-        month: {month: 'long'},
-        weekday: {weekday: 'short'},
-        time: {hour: '2-digit', minute:'2-digit'},
+        month: {
+            month: 'long'
+        },
+        weekday: {
+            weekday: 'short'
+        },
+        time: {
+            hour: '2-digit',
+            minute: '2-digit'
+        },
     };
 
-    var debounce = __webpack_require__(5);
-    var animate = __webpack_require__(12);
-    var isUndefined = __webpack_require__(14);
+    var debounce = __webpack_require__( 5 );
+    var animate = __webpack_require__( 12 );
+    var isUndefined = __webpack_require__( 14 );
 
-    module.exports = Ractive.extend({
+    module.exports = Ractive.extend( {
 
-        template: __webpack_require__(15),
+        template: __webpack_require__( 15 ),
 
         isolated: true,
 
         decorators: {
-            preventOverscroll: __webpack_require__(16),
+            preventOverscroll: __webpack_require__( 16 ),
         },
 
-        data: function() {
+        data: function () {
             return {
 
                 // the selected date
@@ -97,14 +100,16 @@ return /******/ (function(modules) { // webpackBootstrap
 
                 format: '',
 
-                years: Array.apply(0, Array(201)).map(function(a,i){ return 1900+i }),
-                hours: [12,1,2,3,4,5,6,7,8,9,10,11],
+                years: Array.apply( 0, Array( 201 ) ).map( function ( a, i ) {
+                    return 1900 + i
+                } ),
+                hours: [ 12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 ],
 
                 /**
-                * Increment minutes by this interval when setting time.
-                * @default 1
-                * @type integer
-                */
+                 * Increment minutes by this interval when setting time.
+                 * @default 1
+                 * @type integer
+                 */
                 minuteIncrement: 1,
             }
         },
@@ -113,68 +118,68 @@ return /******/ (function(modules) { // webpackBootstrap
 
             // date computations
 
-            year: function() {
+            year: function () {
                 var d = this.date();
-                if(d)
+                if ( d )
                     return d.getFullYear();
             },
 
-            month: function() {
+            month: function () {
                 var d = this.date();
-                if(d)
-                    return d.toLocaleString(navigator.language, localeStringOptions.month);
+                if ( d )
+                    return d.toLocaleString( navigator.language, localeStringOptions.month );
             },
 
-            currentMonth: function() {
-                var current = this.get('current');
-                return new Date(current.year, current.month).toLocaleString(navigator.language, localeStringOptions.month);
+            currentMonth: function () {
+                var current = this.get( 'current' );
+                return new Date( current.year, current.month ).toLocaleString( navigator.language, localeStringOptions.month );
             },
 
-            currentYear: function() {
-                return this.get('current.year');
+            currentYear: function () {
+                return this.get( 'current.year' );
             },
 
-            weekday: function() {
+            weekday: function () {
                 var d = this.date();
-                if(d)
-                    return d.toLocaleString(navigator.language, localeStringOptions.weekday);
+                if ( d )
+                    return d.toLocaleString( navigator.language, localeStringOptions.weekday );
             },
 
-            meridiem: function() {
+            meridiem: function () {
                 var d = this.date();
-                if(d)
+                if ( d )
                     return d.getHours() < 12;
             },
 
-            daysOfWeek: function() {
+            daysOfWeek: function () {
 
-                var dow = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+                var dow = [ 'S', 'M', 'T', 'W', 'T', 'F', 'S' ];
 
-                var firstDayOfWeek = this.get('firstDayOfWeek'); // default 0, Sunday, configurable
+                var firstDayOfWeek = this.get( 'firstDayOfWeek' ); // default 0, Sunday, configurable
 
-                if (firstDayOfWeek > 0 && firstDayOfWeek < 7) {
-                    return Array.prototype.concat(dow.slice(firstDayOfWeek), dow.slice(0, firstDayOfWeek));
+                if ( firstDayOfWeek > 0 && firstDayOfWeek < 7 ) {
+                    return Array.prototype.concat( dow.slice( firstDayOfWeek ), dow.slice( 0, firstDayOfWeek ) );
                 }
 
                 return dow;
             },
 
-            dates: function() {
+            dates: function () {
 
-                var current = this.get('current');
-                var totalDays = new Date(current.year, current.month, 0).getDate(); // of month
-                var firstDayOfMonth = new Date(current.year, current.month, 1).getDay(); // day of week the 1st is on
-                var firstDayOfWeek = this.get('firstDayOfWeek'); // default 0, Sunday, configurable
+                var current = this.get( 'current' );
+                var totalDays = new Date( current.year, current.month, 0 ).getDate(); // of month
+                var firstDayOfMonth = new Date( current.year, current.month, 1 ).getDay(); // day of week the 1st is on
+                var firstDayOfWeek = this.get( 'firstDayOfWeek' ); // default 0, Sunday, configurable
 
                 var days = [];
 
-                if (firstDayOfWeek > 0 && firstDayOfWeek < 7) {
+                if ( firstDayOfWeek > 0 && firstDayOfWeek < 7 ) {
                     firstDayOfMonth = firstDayOfMonth - firstDayOfWeek;
-                    firstDayOfMonth = firstDayOfMonth < 0 ? 7  + firstDayOfMonth : firstDayOfMonth;
+                    firstDayOfMonth = firstDayOfMonth < 0 ? 7 + firstDayOfMonth : firstDayOfMonth;
                 }
 
-                for (var i = 0, j = 1 - firstDayOfMonth; i < 42; i++, j++)
-                    days.push((i >= firstDayOfMonth & i < firstDayOfMonth + totalDays ? j : ' '));
+                for ( var i = 0, j = 1 - firstDayOfMonth; i < 42; i++, j++ )
+                    days.push( ( i >= firstDayOfMonth & i < firstDayOfMonth + totalDays ? j : ' ' ) );
 
                 return days;
 
@@ -183,119 +188,119 @@ return /******/ (function(modules) { // webpackBootstrap
 
             // time computations
 
-            time: function() {
+            time: function () {
                 var d = this.date();
-                if(d)
-                    return d.toLocaleTimeString(navigator.language, localeStringOptions.time);
+                if ( d )
+                    return d.toLocaleTimeString( navigator.language, localeStringOptions.time );
             },
 
-            hour: function() {
+            hour: function () {
                 var d = this.date();
-                if(d)
+                if ( d )
                     return d.getHours();
             },
 
-            minute: function() {
+            minute: function () {
                 var d = this.date();
-                if(d)
+                if ( d )
                     return d.getMinutes();
             },
 
             // 0 - 60
-            minutes: function() {
-                var n = this.get('minuteIncrement');
-                return Array.apply(0, Array(60/n)).map(function(a,i){ return n*i });
+            minutes: function () {
+                var n = this.get( 'minuteIncrement' );
+                return Array.apply( 0, Array( 60 / n ) ).map( function ( a, i ) {
+                    return n * i
+                } );
             },
 
-            meridiem: function() {
+            meridiem: function () {
                 var d = this.date();
-                if(d)
+                if ( d )
                     return d.getHours() < 12 ? 'am' : 'pm';
             }
 
 
         },
 
-        oninit: function() {
+        oninit: function () {
             var self = this;
 
-            var date = self.get('date');
+            var date = self.get( 'date' );
 
-            if(!date) {
+            if ( !date ) {
                 date = new Date();
-                self.set('date', date);
+                self.set( 'date', date );
             }
 
             // update current
-            self.set('current.month', date.getMonth());
-            self.set('current.year', date.getFullYear());
+            self.set( 'current.month', date.getMonth() );
+            self.set( 'current.year', date.getFullYear() );
 
-            self.on('decrementMonth', function(details) {
-                var current = this.get('current');
+            self.on( 'decrementMonth', function ( details ) {
+                var current = this.get( 'current' );
                 current.month--;
-                if(current.month < 0) {
+                if ( current.month < 0 ) {
                     current.month = 11;
                     current.year--;
                 }
-                this.set('current', current);
-            });
+                this.set( 'current', current );
+            } );
 
-            self.on('incrementMonth', function(details) {
-                var current = this.get('current');
+            self.on( 'incrementMonth', function ( details ) {
+                var current = this.get( 'current' );
                 current.month++;
-                if(current.month > 11) {
+                if ( current.month > 11 ) {
                     current.month = 0;
                     current.year++;
                 }
-                this.set('current', current);
-            });
+                this.set( 'current', current );
+            } );
 
-            self.on('setDate', function(details) {
-                var date = this.get('date');
-                var current = this.get('current');
-                date.setYear(current.year);
-                date.setMonth(current.month);
-                date.setDate(details.context);
-                self.set('date', date);
-            });
+            self.on( 'setDate', function ( details ) {
+                var date = this.get( 'date' );
+                var current = this.get( 'current' );
+                date.setYear( current.year );
+                date.setMonth( current.month );
+                date.setDate( details.context );
+                self.set( 'date', date );
+            } );
 
-            self.on('setYear', function(details) {
-                self.set('current.year', details.context);
-                self.set('editing', 'date');
-            });
+            self.on( 'setYear', function ( details ) {
+                var date = this.get( 'date' );
+                date.setFullYear( details.context );
+                self.set( 'date', date );
+                self.set( 'current.year', details.context );
+                self.set( 'editing', 'date' );
+            } );
 
-            self.on('setMeridiem', function(details, meridiem) {
-                var date = this.get('date');
+            self.on( 'setMeridiem', function ( details, meridiem ) {
+                var date = this.get( 'date' );
                 var hours = date.getHours();
-                if(hours <= 12 && meridiem == 'pm')
-                    date.setHours(hours+12);
-                else if(hours >= 12 && meridiem == 'am')
-                    date.setHours(hours-12);
-                self.set('date', date);
-            });
+                if ( hours <= 12 && meridiem == 'pm' )
+                    date.setHours( hours + 12 );
+                else if ( hours >= 12 && meridiem == 'am' )
+                    date.setHours( hours - 12 );
+                self.set( 'date', date );
+            } );
 
-            self.observe('editing', function(editing) {
-                if(editing == 'year') {
-                    var years = self.find('.years');
-                    var activeYear = self.find('.years .active');
-                    activeYear.scrollIntoView();
-                    years.scrollTop -= years.offsetHeight / 2 - ( activeYear.offsetHeight / 2 );
-                }
-            }, {init: false, defer: true});
 
-            self.observe('mode', function(newMode) {
 
-                var editing = self.get('editing');
+            self.observe( 'mode', function ( newMode ) {
 
-                if(newMode == 'date' && editing == 'time')
+                var editing = self.get( 'editing' );
+
+                if ( newMode == 'date' && editing == 'time' )
                     editing = 'date';
 
-                if(newMode == 'time' && (editing == 'date' || editing == 'year'))
+                if ( newMode == 'time' && ( editing == 'date' || editing == 'year' ) )
                     editing = 'time';
 
-                self.set('editing', editing);
+                self.set( 'editing', editing );
 
-            }, {defer: true});
+            }, {
+                defer: true
+            } );
 
 
             /* --------------------- */
@@ -304,138 +309,157 @@ return /******/ (function(modules) { // webpackBootstrap
 
             var animating = {};
 
-            function snap(node, method, value) {
-
-                var startY = node.scrollTop;
-
+            function snap( node, method, value ) {
                 // no node, nothing to do
-                if(!node) {
+                if ( !node ) {
                     return;
                 }
-
+                // block the animation on subsequent calls
+                // from the scroll event handler
+                // but don't block is we're calling it direclty
+                // with a value but do block if that value is the same as the last value
+                if ( animating[ method ] && value == animating[ method ].lastValue ) {
+                    return;
+                }
+                var startY = node.scrollTop;
                 // grab the first div and use to size
-                var div = node.querySelector('div');
+                var div = node.querySelector( 'div' );
 
                 // the dom has been destroyed by the time the debounce
                 // has happened, so just return
-                if(!div)
+                if ( !div ) {
                     return;
+                }
 
-                //console.log('snap() ', arguments);
-
-                var styles = window.getComputedStyle(div);
-                var divHeight =  div.offsetHeight + parseFloat(styles.marginBottom);
-
+                var styles = window.getComputedStyle( div );
+                var divHeight = div.offsetHeight + parseFloat( styles.marginBottom );
                 var index;
-                var meridiem = self.get('meridiem');
+                var meridiem = self.get( 'meridiem' );
 
-                if(!isUndefined(value)) {
+                if ( !isUndefined( value ) ) {
 
                     // we're scrolling to a specific value passed in
-                    index = value;
-
+                    // if that value is a year then subtract 1900 to get its index
+                    index = ( method == 'setYear' && value ? value - 1900 : value );
                     // account for > 12 hours (pm)
-                    if(method == 'setHours' && meridiem == 'pm' && value >= 12)
+                    if ( method == 'setHours' && meridiem == 'pm' && value >= 12 )
                         index -= 12;
 
                 } else {
                     // figure out the closest div to where we scrolled
-                    index = Math.round(startY / divHeight);
+                    index = Math.round( startY / divHeight );
                 }
 
-                if(index >= node.children.length)
+
+                if ( index >= node.children.length )
                     index = node.children.length - 1;
+                div = node.children[ index ];
 
-                div = node.children[index];
-
-                var endY = div.offsetTop - divHeight - parseFloat(styles.marginTop)/2 - parseFloat(styles.marginBottom)/2;
-                //var endY = divHeight*index + parseFloat(styles.marginBottom)/4;
+                var endY = div.offsetTop - ( divHeight * ( ( method == 'setYear' ) && !isUndefined( value ) ? 3 : ( method == 'setYear' ) ? 1.25 : 1 ) ) - parseFloat( styles.marginTop ) / 2 - parseFloat( styles.marginBottom ) / 2;
                 var deltaY = endY - startY;
 
-                // block the animation on subsequent calls
-                // from the scroll event handler
-                // but don't block is we're calling it direclty
-                // with a value
-                if(animating[method] && isUndefined(value))
-                    return;
 
-                animating[method] = animate({
+
+
+                animating[ method ] = animate( {
                     duration: 0.3,
-                    step: function(p) {
-                        node.scrollTop = startY+deltaY*p;
+                    step: function ( p ) {
+                        node.scrollTop = startY + deltaY * p;
                     },
-                    complete: function() {
-                        var date = self.get('date');
-                        var value = parseInt(div.textContent);
-
-                        if(method == 'setHours') {
-                            var meridiem = self.get('meridiem');
-                            if(meridiem == 'pm' && value !== 12)
+                    complete: function () {
+                        var date = self.get( 'date' );
+                        var value = parseInt( div.textContent );
+                        if ( method == 'setHours' ) {
+                            var meridiem = self.get( 'meridiem' );
+                            if ( meridiem == 'pm' && value !== 12 )
                                 value += 12;
-                            if(meridiem == 'am' && value == 12)
+                            if ( meridiem == 'am' && value == 12 )
                                 value = 0;
                         }
 
-                        date[method](value);
+                        date[ method ]( value );
 
-                        self.set('date', date);
-                        animating[method] = false;
-                        //console.log('complete: animating=', animating);
+                        self.set( 'date', date );
+                        animating[ method ] = {
+                            lastValue: value
+                        };
                     }
-                });
+                } );
 
-                animating[method].animating = true;
+                animating[ method ].animating = true;
 
             }
 
             // needs to be debounced so that the UI is fully updated
             // defer: true doesn't count it on the obserer
-            updateTimeEditors = debounce(updateTimeEditors, 10);
+            updateTimeEditors = debounce( updateTimeEditors, 10 );
 
             // update scroll positions of clock editors when first viewed
-            self.observe('editing', updateTimeEditors, {init: false, defer:true});
+            self.observe( 'editing', updateTimeEditors, {
+                init: false,
+                defer: true
+            } );
             // update scroll positions of clock editors when date changes
-            self.observe('date', updateTimeEditors, {init: false});
+            self.observe( 'date', updateTimeEditors, {
+                init: false
+            } );
 
-            function updateTimeEditors() {
+            function updateTimeEditors( changeOfView ) {
+                var cur = {
+                    setHours: self.get( 'hour' ),
+                    setMinutes: self.get( 'minute' ),
+                    setYear: self.get( 'year' )
+                };
+                if ( changeOfView == 'year' ) {
+                    //now in the change year view so we delete hours and minutes animatition
+                    delete animating.setHours;
+                    delete animating.setMinutes;
+                }
+                if ( changeOfView == 'time' ) {
+                    delete animating.setYear;
+                }
 
-                if(self.get('editing') !== 'time')
-                    return;
-
-                for(var key in animating)
-                    if(animating[key])
+                for ( var key in animating ) {
+                    if ( animating[ key ].animating === true || animating[ key ].lastValue == cur[ key ] ) {
                         return;
+                    }
+                }
+                if ( changeOfView == 'time' ) {
+                    snap( self.find( '.clock .hours' ), 'setHours', self.get( 'hour' ) );
+                    snap( self.find( '.clock .minutes' ), 'setMinutes', self.get( 'minute' ) );
+                    return;
+                }
+                if ( changeOfView == 'year' ) {
+                    snap( self.find( '.years' ), 'setYear', self.get( 'year' ) );
+                    return;
+                }
 
-                snap(self.find('.clock .hours'), 'setHours', self.get('hour'));
-                snap(self.find('.clock .minutes'), 'setMinutes', self.get('minute'));
+
             }
 
 
-            var debouncedSnap = debounce(snap, 250);
+            var debouncedSnap = debounce( snap, 250 );
 
-            self.on('clockwheel', function(details, method) {
-                var event = details.original;
-
-                for(var key in animating)
-                    if(animating[key].cancel)
-                        animating[key].cancel()
+            self.on( 'clockwheel', function ( details, method ) {
+                for ( var key in animating )
+                    if ( animating[ key ].cancel )
+                        animating[ key ].cancel()
 
                 animating = {};
 
-                debouncedSnap(details.node, method);
-            });
+                debouncedSnap( details.node, method );
+            } );
 
         },
 
         // prevent computation errors for weird 
-        date: function() {
-            var d = this.get('date');
-            if(d instanceof Date)
+        date: function () {
+            var d = this.get( 'date' );
+            if ( d instanceof Date )
                 return d
         }
 
-    });
-
+    } );
 
 
 /***/ },
@@ -1365,7 +1389,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 15 */
 /***/ function(module, exports) {
 
-    module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":["ractive-datepicker ",{"t":2,"r":"class"}],"style":[{"t":2,"r":"style"}]},"f":[{"t":7,"e":"div","a":{"class":"header"},"f":[{"t":4,"f":[{"t":7,"e":"div","a":{"class":["year",{"t":4,"f":[" active"],"n":50,"x":{"r":["editing"],"s":"_0==\"year\""}}]},"v":{"click":{"m":"set","a":{"r":[],"s":"[\"editing\",\"year\"]"}}},"f":[{"t":2,"r":"year"}]}," ",{"t":7,"e":"div","a":{"class":["date",{"t":4,"f":[" active"],"n":50,"x":{"r":["editing"],"s":"_0==\"date\""}}]},"v":{"click":{"m":"set","a":{"r":[],"s":"[\"editing\",\"date\"]"}}},"f":[{"t":7,"e":"span","a":{"class":"weekday"},"f":[{"t":2,"r":"weekday"},","]}," ",{"t":7,"e":"div","f":[{"t":2,"r":"month"}," ",{"t":2,"x":{"r":["date"],"s":"_0.getDate()"}}]}]}],"n":50,"x":{"r":["mode"],"s":"_0==\"date\"||_0==\"datetime\""}}," ",{"t":4,"f":[{"t":7,"e":"div","a":{"class":["time",{"t":4,"f":[" active"],"n":50,"x":{"r":["editing"],"s":"_0==\"time\""}}]},"v":{"click":{"m":"set","a":{"r":[],"s":"[\"editing\",\"time\"]"}}},"f":[{"t":2,"r":"time"}]}],"n":50,"x":{"r":["mode"],"s":"_0==\"time\"||_0==\"datetime\""}}]}," ",{"t":7,"e":"div","a":{"class":"editor"},"f":[{"t":4,"f":[{"t":7,"e":"div","a":{"class":"years"},"f":[{"t":4,"f":[{"t":7,"e":"div","m":[{"t":4,"f":["class='active'"],"n":50,"x":{"r":[".","year"],"s":"_0==_1"}}],"v":{"click":"setYear"},"f":[{"t":2,"r":"."}]}],"r":"years"}]}],"n":50,"x":{"r":["editing"],"s":"_0==\"year\""}},{"t":4,"n":51,"f":[{"t":4,"n":50,"x":{"r":["editing"],"s":"_0==\"date\""},"f":[{"t":7,"e":"div","a":{"class":"nav"},"f":[{"t":7,"e":"div","a":{"class":"previous"},"v":{"click":"decrementMonth"}}," ",{"t":7,"e":"div","a":{"class":"next"},"v":{"click":"incrementMonth"}}]}," ",{"t":7,"e":"div","a":{"class":"monthyear"},"f":[{"t":2,"r":"currentMonth"}," ",{"t":7,"e":"span","v":{"click":{"m":"set","a":{"r":[],"s":"[\"editing\",\"year\"]"}}},"f":[{"t":2,"r":"currentYear"}]}]}," ",{"t":7,"e":"div","a":{"class":"days"},"f":[{"t":7,"e":"div","a":{"class":"weekdays"},"f":[{"t":4,"f":[{"t":7,"e":"div","f":[{"t":2,"r":"."}]}],"r":"daysOfWeek"}]}," ",{"t":7,"e":"div","a":{"class":"dates"},"f":[{"t":4,"f":[{"t":7,"e":"div","m":[{"t":4,"f":["class='active'"],"n":50,"x":{"r":["current.year","current.month","date","."],"s":"_2 instanceof Date&&_2.getFullYear()==_0&&_2.getMonth()==_1&&_2.getDate()==_3"}}],"v":{"click":"setDate"},"f":[{"t":2,"r":"."}]}],"r":"dates"}]}]}]},{"t":4,"n":50,"x":{"r":["editing"],"s":"(!(_0==\"date\"))&&(_0==\"time\")"},"f":[" ",{"t":7,"e":"div","a":{"class":"clock"},"f":[{"t":7,"e":"div","a":{"class":"hours"},"v":{"wheel-touchmove":{"n":"clockwheel","a":"setHours"}},"o":"preventOverscroll","f":[{"t":4,"f":[{"t":7,"e":"div","f":[{"t":2,"r":"."}]}],"r":"hours"}]}," ",{"t":7,"e":"span","a":{"class":"colon"},"f":[":"]}," ",{"t":7,"e":"div","a":{"class":"minutes"},"v":{"wheel-touchmove":{"n":"clockwheel","a":"setMinutes"}},"o":"preventOverscroll","f":[{"t":4,"f":[{"t":7,"e":"div","f":[{"t":2,"x":{"r":["."],"s":"_0<10?\"0\"+_0:_0"}}]}],"r":"minutes"}]}," ",{"t":7,"e":"div","a":{"class":"meridiem"},"f":[{"t":7,"e":"span","a":{"class":["am ",{"t":4,"f":["selected"],"n":50,"x":{"r":["meridiem"],"s":"_0==\"am\""}}]},"v":{"click":{"n":"setMeridiem","a":"am"}},"f":["AM"]}," ",{"t":7,"e":"span","a":{"class":["pm ",{"t":4,"f":["selected"],"n":50,"x":{"r":["meridiem"],"s":"_0==\"pm\""}}]},"v":{"click":{"n":"setMeridiem","a":"pm"}},"f":["PM"]}]}]}]}],"x":{"r":["editing"],"s":"_0==\"year\""}}]}]}]};
+    module.exports={"v":3,"t":[{"t":7,"e":"div","a":{"class":["ractive-datepicker ",{"t":2,"r":"class"}],"style":[{"t":2,"r":"style"}]},"f":[{"t":7,"e":"div","a":{"class":"header"},"f":[{"t":4,"f":[{"t":7,"e":"div","a":{"class":["year",{"t":4,"f":[" active"],"n":50,"x":{"r":["editing"],"s":"_0==\"year\""}}]},"v":{"click":{"m":"set","a":{"r":[],"s":"[\"editing\",\"year\"]"}}},"f":[{"t":2,"r":"year"}]}," ",{"t":7,"e":"div","a":{"class":["date",{"t":4,"f":[" active"],"n":50,"x":{"r":["editing"],"s":"_0==\"date\""}}]},"v":{"click":{"m":"set","a":{"r":[],"s":"[\"editing\",\"date\"]"}}},"f":[{"t":7,"e":"span","a":{"class":"weekday"},"f":[{"t":2,"r":"weekday"},","]}," ",{"t":7,"e":"div","f":[{"t":2,"r":"month"}," ",{"t":2,"x":{"r":["date"],"s":"_0.getDate()"}}]}]}],"n":50,"x":{"r":["mode"],"s":"_0==\"date\"||_0==\"datetime\""}}," ",{"t":4,"f":[{"t":7,"e":"div","a":{"class":["time",{"t":4,"f":[" active"],"n":50,"x":{"r":["editing"],"s":"_0==\"time\""}}]},"v":{"click":{"m":"set","a":{"r":[],"s":"[\"editing\",\"time\"]"}}},"f":[{"t":2,"r":"time"}]}],"n":50,"x":{"r":["mode"],"s":"_0==\"time\"||_0==\"datetime\""}}]}," ",{"t":7,"e":"div","a":{"class":"editor"},"f":[{"t":4,"f":[{"t":7,"e":"div","a":{"class":"years"},"v":{"wheel-touchmove":{"n":"clockwheel","a":"setYear"}},"o":"preventOverscroll","f":[{"t":4,"f":[{"t":7,"e":"div","m":[{"t":4,"f":["class='active'"],"n":50,"x":{"r":[".","year"],"s":"_0==_1"}}],"v":{"click":"setYear"},"f":[{"t":2,"r":"."}]}],"r":"years"}]}],"n":50,"x":{"r":["editing"],"s":"_0==\"year\""}},{"t":4,"n":51,"f":[{"t":4,"n":50,"x":{"r":["editing"],"s":"_0==\"date\""},"f":[{"t":7,"e":"div","a":{"class":"nav"},"f":[{"t":7,"e":"div","a":{"class":"previous"},"v":{"click":"decrementMonth"}}," ",{"t":7,"e":"div","a":{"class":"next"},"v":{"click":"incrementMonth"}}]}," ",{"t":7,"e":"div","a":{"class":"monthyear"},"f":[{"t":2,"r":"currentMonth"}," ",{"t":7,"e":"span","v":{"click":{"m":"set","a":{"r":[],"s":"[\"editing\",\"year\"]"}}},"f":[{"t":2,"r":"currentYear"}]}]}," ",{"t":7,"e":"div","a":{"class":"days"},"f":[{"t":7,"e":"div","a":{"class":"weekdays"},"f":[{"t":4,"f":[{"t":7,"e":"div","f":[{"t":2,"r":"."}]}],"r":"daysOfWeek"}]}," ",{"t":7,"e":"div","a":{"class":"dates"},"f":[{"t":4,"f":[{"t":7,"e":"div","m":[{"t":4,"f":["class='active'"],"n":50,"x":{"r":["current.year","current.month","date","."],"s":"_2 instanceof Date&&_2.getFullYear()==_0&&_2.getMonth()==_1&&_2.getDate()==_3"}}],"v":{"click":"setDate"},"f":[{"t":2,"r":"."}]}],"r":"dates"}]}]}]},{"t":4,"n":50,"x":{"r":["editing"],"s":"(!(_0==\"date\"))&&(_0==\"time\")"},"f":[" ",{"t":7,"e":"div","a":{"class":"clock"},"f":[{"t":7,"e":"div","a":{"class":"hours"},"v":{"wheel-touchmove":{"n":"clockwheel","a":"setHours"}},"o":"preventOverscroll","f":[{"t":4,"f":[{"t":7,"e":"div","f":[{"t":2,"r":"."}]}],"r":"hours"}]}," ",{"t":7,"e":"span","a":{"class":"colon"},"f":[":"]}," ",{"t":7,"e":"div","a":{"class":"minutes"},"v":{"wheel-touchmove":{"n":"clockwheel","a":"setMinutes"}},"o":"preventOverscroll","f":[{"t":4,"f":[{"t":7,"e":"div","f":[{"t":2,"x":{"r":["."],"s":"_0<10?\"0\"+_0:_0"}}]}],"r":"minutes"}]}," ",{"t":7,"e":"div","a":{"class":"meridiem"},"f":[{"t":7,"e":"span","a":{"class":["am ",{"t":4,"f":["selected"],"n":50,"x":{"r":["meridiem"],"s":"_0==\"am\""}}]},"v":{"click":{"n":"setMeridiem","a":"am"}},"f":["AM"]}," ",{"t":7,"e":"span","a":{"class":["pm ",{"t":4,"f":["selected"],"n":50,"x":{"r":["meridiem"],"s":"_0==\"pm\""}}]},"v":{"click":{"n":"setMeridiem","a":"pm"}},"f":["PM"]}]}]}]}],"x":{"r":["editing"],"s":"_0==\"year\""}}]}]}]};
 
 /***/ },
 /* 16 */
