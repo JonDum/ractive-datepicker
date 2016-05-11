@@ -20,6 +20,11 @@
     "ignore": [
         "node_modules",
         "bower_components",
-        "src"
+        "src",
+        "demo",
+        "Gruntfile.js",
+        "bower.json",
+        "package.json",
+        "webpack.config.js"
     ]
 }
