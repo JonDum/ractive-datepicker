@@ -1,0 +1,25 @@
+{
+    "name": "ractive-datepicker",
+    "main": "ractive-datepicker.min.js",
+    "version": "0.1.3",
+    "homepage": "https://github.com/jondum/ractive-datepicker",
+    "authors": [
+        "Jonathan Dumaine"
+    ],
+    "description": "A datepicker component for ractive",
+    "moduleType": [
+        "globals"
+    ],
+    "keywords": [
+        "ractive",
+        "date",
+        "datepicker",
+        "component"
+    ],
+    "license": "MIT",
+    "ignore": [
+        "node_modules",
+        "bower_components",
+        "src"
+    ]
+}
