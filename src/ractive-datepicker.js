@@ -299,7 +299,7 @@ module.exports = Ractive.extend( {
                 index = node.children.length - 1;
             div = node.children[ index ];
 
-            var endY = div.offsetTop - ( divHeight * ( ( method == 'setYear' ) && !isUndefined( value ) ? 3 : ( method == 'setYear' ) ? 1.25 : 1 ) ) - parseFloat( styles.marginTop ) / 2 - parseFloat( styles.marginBottom ) / 2;
+            var endY = div.offsetTop - ( divHeight * ( ( method == 'setYear' ) && !isUndefined( value ) ? 3 : 1 ) ) - parseFloat( styles.marginTop ) / 2 - parseFloat( styles.marginBottom ) / 2;
             var deltaY = endY - startY;
 
 
