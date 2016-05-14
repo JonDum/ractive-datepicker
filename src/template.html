@@ -23,12 +23,18 @@
 
     <div class='editor'>
     {{#if editing == 'year'}}
+       <div class='nav'>
+            <div class='next up' on-click='decrementYear'></div>
+        </div>
         <div class='years' on-wheel-touchmove='clockwheel:setYear' decorator='preventOverscroll'>
             {{#years}}
                 <div {{#if this==year}}class='active'{{/if}} on-click='setYear'>
                     {{this}}
                 </div>
             {{/}}
+        </div>
+        <div class='nav'>
+            <div class='previous down' on-click='incrementYear'></div>
         </div>
     {{elseif editing == 'date'}}
 

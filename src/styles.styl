@@ -73,6 +73,20 @@
             display inline-block
             cursor pointer
             top 1.5em
+            &.up
+                position relative
+                top 0
+                right 0
+                left 50%
+                &:before
+                    content '▲'
+            &.down
+                position relative
+                top 0
+                right 0
+                left 50%
+                &:before
+                    content '▼'
         .previous
             left 2.5em
             &:before

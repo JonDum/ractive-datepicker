@@ -201,12 +201,26 @@ module.exports = Ractive.extend( {
             this.set( 'current', current );
         } );
 
+        self.on( 'decrementYear', function ( details ) {
+            var current = this.get( 'current' );
+            current.year--;
+            this.set( 'current', current );
+            this.fire( 'setDate' );
+        } );
+
+        self.on( 'incrementYear', function ( details ) {
+            var current = this.get( 'current' );
+            current.year++;
+            this.set( 'current', current );
+            this.fire( 'setDate' );
+        } );
+
         self.on( 'setDate', function ( details ) {
             var date = this.get( 'date' );
             var current = this.get( 'current' );
             date.setYear( current.year );
             date.setMonth( current.month );
-            date.setDate( details.context );
+            details && date.setDate( details.context );
             self.set( 'date', date );
         } );
 
