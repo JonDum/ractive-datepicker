@@ -10,7 +10,7 @@
 
         <div class='date{{#if editing=="date"}} active{{/if}}' on-click='set("editing", "date")'>
             <span class='weekday'>{{weekday}},</span>
-            <div>{{month}} {{date.getDate()}}</div>
+            <div>{{month}} {{date instanceof Date ? date.getDate() : "" }}</div>
         </div>
         {{/if}}
 
