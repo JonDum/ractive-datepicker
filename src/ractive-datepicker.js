@@ -219,12 +219,13 @@ module.exports = Ractive.extend({
         });
 
         self.observe('editing', function(editing) {
-            if(editing == 'year') {
-                var years = self.find('.years');
-                var activeYear = self.find('.years .active');
-                activeYear.scrollIntoView();
-                years.scrollTop -= years.offsetHeight / 2 - ( activeYear.offsetHeight / 2 );
-            }
+            setTimeout(function() {
+                if(editing == 'year') {
+                    var years = self.find('.years');
+                    var activeYear = self.find('.years .active');
+                    years.scrollTop = activeYear.offsetTop - years.offsetHeight/2;
+                }
+            });
         }, {init: false, defer: true});
 
         self.observe('mode', function(newMode) {
