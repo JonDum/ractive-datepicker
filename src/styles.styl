@@ -18,9 +18,17 @@
         position relative
         text-align left
 
+        label
+            font-size 0.8em
+            margin-bottom 1em
+            display inline-block
+            opacity 0.5
+
         > div
             cursor pointer
 
+        &.range .active:after
+            content none
         .active
             color #fff
             position relative
@@ -38,7 +46,11 @@
             font-size 2em
 
         .time
-            margin-top 2em
+            margin-top 1em
+            margin-bottom 2em
+            span
+                display inline-block
+                border-bottom 1px dashed currentColor
 
     .editor
         flex 1 1 66%
@@ -64,6 +76,8 @@
         margin-bottom 1em
         span
             cursor pointer
+            display inline-block
+            border-bottom 1px dashed currentColor
 
     .nav
         .next, .previous
@@ -84,18 +98,16 @@
 
     .weekdays
         display flex
-        opacity 0.4
+        opacity 0.5
+        font-weight bold
 
     .dates, .weekdays
         > div
             display inline-block
-            width 2em
-            height 2em
-            margin 0.5em
-            text-align center
+            width 3em
+            height 3em
             line-height @height
-            vertical-align top
-            cursor pointer
+            text-align center
 
     .dates
         max-width 21em
@@ -106,10 +118,46 @@
         height 21em
 
     .dates
-        .active
-            background #0097A7
-            color #fff
+        user-select none
+        > div
+            user-select none
+            -webkit-user-select none
+            -ms-user-select none
+
+        > div:not(.between):not(.start):not(.end):not(.selected)
+            cursor pointer
             border-radius 50%
+            &:hover
+                background #f0f0f0
+
+        .off:not(.ghost)
+            opacity 0.25
+
+        .between
+            background mix(#0097A7, #fff, 15%)
+            &.ghost
+                background fade-out(mix(#0097A7, #fff, 15%), 0.75)
+
+        > div
+            &.selected, &.start, &.end
+                background #0097A7
+                color #fff
+                border-radius 50%
+                &.ghost
+                    background fade-out(#0097A7, 0.75)
+                    color inherit
+
+        .start
+            //border-top-right-radius 0
+            //border-bottom-right-radius 0
+            //border-radius 2em 0 0 25%
+            border-radius 50% 0 0 50% !important
+
+        .end
+            //border-top-left-radius 0
+            //border-bottom-left-radius 0
+            //border-radius 0 25% 2em 0
+            border-radius 0 50% 50% 0 !important
 
     .years
         overflow-y scroll
@@ -120,7 +168,7 @@
             font-size 1.4em
             margin 1em 0
             cursor pointer
-            &.active
+            &.selected
                 font-weight bold
                 margin 0.5em 0
                 display inline-block
@@ -165,28 +213,38 @@
                 opacity 0.2
 
 
-@media (max-width:700px)
-    .ractive-datepicker
-        flex-direction column
-        font-size 0.8em
-        .header
-            display flex
-            flex-direction row
-            align-items flex-end
-            padding 1.5em
-            .weekday
-                font-size 1em
-            div
-                display inline
-            > div
-                margin-top 0 !important
-                margin-right 1em
-            .active:after
-                border-right-color transparent
-                border-bottom-color #fff
-                left 50%
-                right auto
-                bottom -1.5em
-                margin-top 0
-                margin-left -10px
 
+$compact()
+    flex-direction column
+    font-size 0.8em
+    .header
+        display flex
+        flex-direction row
+        align-items flex-end
+        padding 1.5em
+        .weekday
+            font-size 1em
+        div
+            display inline
+        > div
+            margin-top 0 !important
+            margin-right 1em
+            margin-bottom 0
+        .active:after
+            border-right-color transparent
+            border-bottom-color #fff
+            left 50%
+            right auto
+            bottom -1.5em
+            margin-top 0
+            margin-left -10px
+
+    .editor
+        flex 1 1
+
+
+.ractive-datepicker
+    @media (max-width:700px)
+        $compact()
+    &.compact
+        $compact()

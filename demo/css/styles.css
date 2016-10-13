@@ -75,32 +75,3 @@ section + section {
 .light .ractive-datepicker .dates .active {
   background: #a70072;
 }
-.ractive-datepicker.compact {
-  flex-direction: column;
-  font-size: 0.8em;
-}
-.ractive-datepicker.compact .header {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-end;
-  padding: 1.5em;
-}
-.ractive-datepicker.compact .header .weekday {
-  font-size: 1em;
-}
-.ractive-datepicker.compact .header div {
-  display: inline;
-}
-.ractive-datepicker.compact .header > div {
-  margin-top: 0 !important;
-  margin-right: 1em;
-}
-.ractive-datepicker.compact .header .active:after {
-  border-right-color: transparent;
-  border-bottom-color: #fff;
-  left: 50%;
-  right: auto;
-  bottom: -1.5em;
-  margin-top: 0;
-  margin-left: -10px;
-}

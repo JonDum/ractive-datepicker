@@ -8,10 +8,12 @@
 
 ### Install
 
-
 ```
 npm install ractive-datepicker --save
 ```
+
+NOTE: `ractive-datepicker` requires ractive version 0.8.x
+
 
 ### Usage
 
@@ -27,17 +29,32 @@ Ractive.extend({
 });
 ```
 
-Use it like a normal datepicker element
+Use it in your template:
 
 ```html
-<datepicker date='{{ myValue }}'>
-</datepicker>
+<datepicker date='{{myDate}}'></datepicker>
 ```
 
+Use `mode` to disable/enable time selection. Default is `'datetime'` which shows time pickers.
+
+```html
+<datepicker date='{{myDate}}' mode='date'></datepicker>
+```
+
+To enable ranges
+
+```html
+<datepicker range='true' start='{{startDate}}' end='{{endDate}}'></datepicker>
+```
+
+### Changelog
+
+0.2.0 - Add date ranges and a significant UI/styles overhaul
+
+0.1.0 - Initial
 
 ### TODO
 
-* Text Input / Dropdown buttons
-* Period selection
+* Moment.js integration for locales
 
 

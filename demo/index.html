@@ -6,7 +6,6 @@
 
         <meta charset="utf-8">
 
-        <script src='//cdn.ractivejs.org/edge/ractive.min.js'></script>
         <link rel='stylesheet' href='css/styles.css'/>
 
         <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
@@ -15,8 +14,11 @@
 
     <body>
 
-
         <demo></demo>
+
+        <!--<script src='//cdn.ractivejs.org/edge/ractive.js'></script>-->
+        <script type="text/javascript" src='http://cdn.ractivejs.org/edge/ractive.js'></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js"></script>
 
         <script src='../ractive-datepicker.js'></script>
 
@@ -73,25 +75,55 @@
                 Selected date: {{date.toLocaleString()}}
             </div>
 
-
         </div>
+
+        </section>
+
+        <section>
+            <h2>Date Ranges</h2>
+
+            <code>ractive-datepicker</code> provides a compact mode that kicks in at 700px or with the "compact" class
+
+            <pre>
+                <code>
+    &lt;datepicker range='true' start='\{{start}}' end='\{{end}}''&gt;&lt;/datepicker&gt;
+                </code>
+            </pre>
+
+            <p>
+                <datepicker start='{{start}}' end='{{end}}' range='true'></datepicker>
+            </p>
+
+            <p>
+                Start: {{start && start.toLocaleString()}}<br/>
+                End: {{end && end.toLocaleString()}}<br/>
+            </p>
+
 
         </section>
 
         <section>
             <h2>Responsive</h2>
 
-            <code>ractive-datepicker</code> provides a compact mode that kicks in at 700px
+            <code>ractive-datepicker</code> provides a compact mode that kicks in at 700px or with the "compact" class
+
+            <pre>
+                <code>
+    &lt;datepicker class='compact'&gt;&lt;/datepicker&gt;
+                </code>
+            </pre>
+
 
             <p>
-            <datepicker class='compact'></datepicker>
+                <datepicker class='compact'></datepicker>
             </p>
 
         </section>
 
         <section>
             <h2>Styling</h2>
-            <code>ractive-datepicker</code> provides minimal styling, so it can easily be themed as needed
+            <code>ractive-datepicker</code> provides minimal styling, so it can easily be themed as needed. Even the previous/next arrows are
+            psuedo ::before elements so you can easily replace them with your own icons from an icon font.
 
             <div class='dark well'>
                 <datepicker class='dark'>
@@ -107,6 +139,7 @@
 
         </script>
 
+
         <script>
 
             var main = new Ractive({
@@ -116,7 +149,9 @@
                 template: '#template',
 
                 data: {
-                    mode: 'datetime'
+                    mode: 'datetime',
+                    start: new Date(),
+                    moment: moment,
                 },
 
                 components: {
