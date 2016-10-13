@@ -35,6 +35,9 @@ section + section {
 .dark.well .ractive-datepicker .dates .active {
   background: #6097ec;
 }
+.dark.well .ractive-datepicker .dates > div:not(.between):not(.start):not(.end):not(.selected):hover {
+  background: rgba(255,255,255,0.05);
+}
 .dark.well .ractive-datepicker .days {
   color: rgba(255,255,255,0.4);
 }

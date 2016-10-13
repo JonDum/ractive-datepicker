@@ -34,6 +34,8 @@ section
                 border-right-color @background
         .dates .active
             background #6097EC
+        .dates > div:not(.between):not(.start):not(.end):not(.selected):hover
+            background fade-out(#fff, 0.95)
         .days
             color fade-out(#fff, 0.6)
         .years:after
