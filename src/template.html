@@ -96,12 +96,12 @@
                     {{#with moment(start) as mStart, moment(end) as mEnd, moment(ghostEnd) as mGhostEnd}}
                     {{#dates}}
                         {{#with moment(this) as mThis}}
-                        <div class-start='{{ mStart.isSame(this, "day") && !mStart.isSame(end, "day") }}'
+                        <div class-start='{{ (ghostEnd || end) && mStart.isSame(this, "day") && !mStart.isSame(end, "day") }}'
                              class-between='{{ mThis.isBetween(start, end) || mThis.isBetween(start, ghostEnd) }}'
                              class-off='{{this.getMonth() !== current.month}}'
                              class-end='{{ (mEnd.isSame(this, "day") || mGhostEnd.isSame(this, "day") ) && !mThis.isSame(start, "day") }}'
                              class-ghost='{{ !mThis.isBefore(start) && (mThis.isBetween(start, ghostEnd) || mThis.isSame(ghostEnd, "day") ) && !mThis.isBetween(start, end) }}'
-                             class-selected='{{ mStart.isSame(end, "day") && mThis.isSame(end, "day") }}'
+                             class-selected='{{ mThis.isSame(start, "day") && !ghostEnd && !end }}'
                              on-hover='set("ghostEnd", lastSet == "start" && mThis.isAfter(start) ? this : null)'
                              on-click='setDate'>
                             {{this.getDate()}}
