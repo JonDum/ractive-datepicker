@@ -1,6 +1,6 @@
 {
   "name": "ractive-datepicker",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "A datepicker component for ractive",
   "main": "src/ractive-datepicker.js",
   "repository": "https://github.com/jondum/ractive-datepicker",
