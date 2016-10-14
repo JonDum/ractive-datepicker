@@ -316,6 +316,10 @@ module.exports = Ractive.extend({
 
         }, {defer: true});
 
+        self.observe('start end', function() {
+            self.set('ghostEnd', null);
+        });
+
 
         /* --------------------- */
         // time editor stuff
