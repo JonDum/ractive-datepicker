@@ -181,7 +181,7 @@ module.exports = Ractive.extend({
                 start = date;
                 self.set('start', start);
             }
-            if(!end || !moment(start).isAfter(end)) {
+            if(end === undefined || (end && !moment(start).isAfter(end))) {
                 end = new Date(start.getTime() + 3*24*60*60*1000); // default to 3 days after
                 self.set('end', end);
             }
