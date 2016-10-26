@@ -244,6 +244,8 @@ module.exports = Ractive.extend({
 
                     self.set('start', date);
 
+                    self.fire('startChange');
+
                     self.set('current.year', clicked.getFullYear());
                     self.set('current.month', clicked.getMonth());
                     
@@ -254,6 +256,7 @@ module.exports = Ractive.extend({
 
                     self.set('lastSet', 'end');
                     self.set('end', date);
+                    self.fire('endChange');
                     self.set('ghostEnd', null);
 
                 }
