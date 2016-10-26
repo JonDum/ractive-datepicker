@@ -91,7 +91,7 @@
                     </div>
                 {{/}}
             </div>
-            <div class='dates'>
+            <div class='dates' on-mouseleave='set("ghostEnd", null)'>
                 {{#if range}}
                     {{#with moment(start) as mStart, moment(end) as mEnd, moment(ghostEnd) as mGhostEnd}}
                     {{#dates}}
