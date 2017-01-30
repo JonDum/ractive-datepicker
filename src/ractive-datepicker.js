@@ -70,7 +70,6 @@ module.exports = Ractive.extend({
 
             moment: moment,
 
-
             // helpers
 
             year: function(d) {
@@ -78,15 +77,15 @@ module.exports = Ractive.extend({
             },
 
             month: function(d) {
-                return d.toLocaleString(navigator.language, localeStringOptions.month);
+                return moment(d).format('MMMM');
             },
             
             time: function(d) {
-                return d.toLocaleTimeString(navigator.language, localeStringOptions.time);
+                return moment(d).format('h:mm a')
             },
 
             weekday: function(d) {
-                return d.toLocaleString(navigator.language, localeStringOptions.weekday);
+                return moment(d).format('ddd');
             },
 
             meridiem: function(d) {
@@ -105,7 +104,7 @@ module.exports = Ractive.extend({
         currentMonth: function() {
             var current = this.get('current');
             if(current)
-                return new Date(current.year, current.month).toLocaleString(navigator.language, localeStringOptions.month);
+                return moment(new Date(current.year, current.month)).format('MMMM');
         },
 
         currentYear: function() {
