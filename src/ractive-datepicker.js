@@ -5,13 +5,13 @@ var doc = document;
 require('./styles.styl');
 
 var localeStringOptions = {
-    month: {month: 'long'},
-    weekday: {weekday: 'short'},
-    time: {hour: '2-digit', minute:'2-digit'},
+    month: { month: 'long' },
+    weekday: { weekday: 'short' },
+    time: { hour: '2-digit', minute: '2-digit' },
 };
 
 var animate = require('./util/animate');
-var moment = require('moment');
+//var moment = require('moment');
 
 var debounce = require('lodash/debounce');
 var isNil = require('lodash/isNil');
@@ -21,7 +21,7 @@ var isNil = require('lodash/isNil');
 
 module.exports = Ractive.extend({
 
-    template: require('./template.html'),
+    template: require('template.html'),
 
     isolated: true,
 
@@ -31,10 +31,10 @@ module.exports = Ractive.extend({
     },
 
     events: {
-        hover: require( 'ractive-events-hover' )
+        hover: require('ractive-events-hover')
     },
 
-    data: function() {
+    data: function () {
         return {
 
             // the selected date
@@ -56,8 +56,8 @@ module.exports = Ractive.extend({
 
             editing: 'date',
 
-            years: Array.apply(0, Array(201)).map(function(a,i){ return 1900+i }),
-            hours: [12,1,2,3,4,5,6,7,8,9,10,11],
+            years: Array.apply(0, Array(201)).map(function (a, i) { return 1900 + i }),
+            hours: [12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
 
             lastSet: 'end',
 
@@ -72,24 +72,24 @@ module.exports = Ractive.extend({
 
             // helpers
 
-            year: function(d) {
+            year: function (d) {
                 return d.getFullYear();
             },
 
-            month: function(d) {
+            month: function (d) {
                 return moment(d).format('MMMM');
             },
-            
-            time: function(d) {
+
+            time: function (d) {
                 return moment(d).format('h:mm a')
             },
 
-            weekday: function(d) {
+            weekday: function (d) {
                 return moment(d).format('ddd');
             },
 
-            meridiem: function(d) {
-                if(d.getHours)
+            meridiem: function (d) {
+                if (d.getHours)
                     d = d.getHours();
                 return d < 12 ? 'am' : 'pm';
             },
@@ -101,17 +101,17 @@ module.exports = Ractive.extend({
 
         // date computations
 
-        currentMonth: function() {
+        currentMonth: function () {
             var current = this.get('current');
-            if(current)
+            if (current)
                 return moment(new Date(current.year, current.month)).format('MMMM');
         },
 
-        currentYear: function() {
+        currentYear: function () {
             return this.get('current.year');
         },
 
-        daysOfWeek: function() {
+        daysOfWeek: function () {
 
             var dow = moment.localeData()._weekdaysMin;
             var fdow = this.get('firstDayOfWeek')
@@ -125,7 +125,7 @@ module.exports = Ractive.extend({
             return dow;
         },
 
-        dates: function() {
+        dates: function () {
 
             var current = this.get('current');
             var totalDays = new Date(current.year, current.month, 0).getDate(); // of month
@@ -136,10 +136,10 @@ module.exports = Ractive.extend({
 
             if (firstDayOfWeek > 0 && firstDayOfWeek < 7) {
                 firstDayOfMonth = firstDayOfMonth - firstDayOfWeek;
-                firstDayOfMonth = firstDayOfMonth < 0 ? 7  + firstDayOfMonth : firstDayOfMonth;
+                firstDayOfMonth = firstDayOfMonth < 0 ? 7 + firstDayOfMonth : firstDayOfMonth;
             }
 
-            for (var i = 0, j = 1 - firstDayOfMonth; i < 42; i++, j++)
+            for (var i = 0, j = 1 - firstDayOfMonth; i < 42; i++ , j++)
                 //days.push((i >= firstDayOfMonth & i < firstDayOfMonth + totalDays ? new Date(current.year, current.month, j) : ' '));
                 days.push(new Date(current.year, current.month, j));
 
@@ -148,14 +148,14 @@ module.exports = Ractive.extend({
         },
 
         // 0 - 60
-        minutes: function() {
+        minutes: function () {
             var n = this.get('minuteIncrement');
-            return Array.apply(0, Array(60/n)).map(function(a,i){ return n*i });
+            return Array.apply(0, Array(60 / n)).map(function (a, i) { return n * i });
         },
 
     },
 
-    onconfig: function() {
+    onconfig: function () {
 
         var self = this;
 
@@ -165,9 +165,9 @@ module.exports = Ractive.extend({
         var start = self.get('start');
         var end = self.get('end');
 
-        if(!date) {
+        if (!date) {
             date = new Date();
-            if(!range)
+            if (!range)
                 self.set('date', date);
         }
 
@@ -175,13 +175,13 @@ module.exports = Ractive.extend({
             return start.getTime() < end.getTime();
         }
 
-        if(range) {
-            if(!start) {
+        if (range) {
+            if (!start) {
                 start = date;
                 self.set('start', start);
             }
-            if(end === undefined || (end && !moment(start).isAfter(end))) {
-                end = new Date(start.getTime() + 3*24*60*60*1000); // default to 3 days after
+            if (end === undefined || (end && !moment(start).isAfter(end))) {
+                end = new Date(start.getTime() + 3 * 24 * 60 * 60 * 1000); // default to 3 days after
                 self.set('end', end);
             }
         }
@@ -192,30 +192,30 @@ module.exports = Ractive.extend({
 
     },
 
-    oninit: function() {
+    oninit: function () {
         var self = this;
 
-        self.on('decrementMonth', function(details) {
+        self.on('decrementMonth', function (details) {
             var current = this.get('current');
             current.month--;
-            if(current.month < 0) {
+            if (current.month < 0) {
                 current.month = 11;
                 current.year--;
             }
             this.set('current', current);
         });
 
-        self.on('incrementMonth', function(details) {
+        self.on('incrementMonth', function (details) {
             var current = this.get('current');
             current.month++;
-            if(current.month > 11) {
+            if (current.month > 11) {
                 current.month = 0;
                 current.year++;
             }
             this.set('current', current);
         });
 
-        self.on('setDate', function(details) {
+        self.on('setDate', function (details) {
 
             var clicked = details.get();
 
@@ -224,14 +224,14 @@ module.exports = Ractive.extend({
             var range = self.get('range');
             var start = self.get('start');
             var end = self.get('end');
-            
+
             var lastSet = self.get('lastSet');
 
             // store these so we can restore them later
             var hours = date.getHours();
             var minutes = date.getMinutes();
 
-            if(range) {
+            if (range) {
 
                 date = clicked;
 
@@ -239,7 +239,7 @@ module.exports = Ractive.extend({
                 date.setMinutes(minutes);
 
 
-                if(lastSet == 'end' || moment(clicked).isBefore(start)) {
+                if (lastSet == 'end' || moment(clicked).isBefore(start)) {
 
                     self.set('start', date);
 
@@ -247,7 +247,7 @@ module.exports = Ractive.extend({
 
                     self.set('current.year', clicked.getFullYear());
                     self.set('current.month', clicked.getMonth());
-                    
+
                     self.set('end', null);
                     self.set('lastSet', 'start');
 
@@ -277,48 +277,48 @@ module.exports = Ractive.extend({
 
         });
 
-        self.on('setYear', function(details) {
+        self.on('setYear', function (details) {
             self.set('current.year', details.context);
             self.set('editing', 'date');
         });
 
-        self.on('setMeridiem', function(details, meridiem) {
+        self.on('setMeridiem', function (details, meridiem) {
             var editing = self.get('editing').replace('time', '') || 'date';
             var date = self.get(editing);
-            
+
             var hours = date.getHours();
-            if(hours <= 12 && meridiem == 'pm')
-                date.setHours(hours+12);
-            else if(hours >= 12 && meridiem == 'am')
-                date.setHours(hours-12);
+            if (hours <= 12 && meridiem == 'pm')
+                date.setHours(hours + 12);
+            else if (hours >= 12 && meridiem == 'am')
+                date.setHours(hours - 12);
             self.set(editing, date);
         });
 
-        self.observe('editing', function(editing) {
-            setTimeout(function() {
-                if(editing.indexOf('year') > -1) {
+        self.observe('editing', function (editing) {
+            setTimeout(function () {
+                if (editing.indexOf('year') > -1) {
                     var years = self.find('.years');
                     var activeYear = self.find('.years .active');
-                    years.scrollTop = activeYear.offsetTop - years.offsetHeight/2;
+                    years.scrollTop = activeYear.offsetTop - years.offsetHeight / 2;
                 }
             });
-        }, {init: false, defer: true});
+        }, { init: false, defer: true });
 
-        self.observe('mode', function(newMode) {
+        self.observe('mode', function (newMode) {
 
             var editing = self.get('editing');
 
-            if(newMode == 'date' && editing == 'time')
+            if (newMode == 'date' && editing == 'time')
                 editing = 'date';
 
-            if(newMode == 'time' && (editing == 'date' || editing == 'year'))
+            if (newMode == 'time' && (editing == 'date' || editing == 'year'))
                 editing = 'time';
 
             self.set('editing', editing);
 
-        }, {defer: true});
+        }, { defer: true });
 
-        self.observe('start end', function() {
+        self.observe('start end', function () {
             self.set('ghostEnd', null);
         });
 
@@ -335,7 +335,7 @@ module.exports = Ractive.extend({
             var startY = node.scrollTop;
 
             // no node, nothing to do
-            if(!node) {
+            if (!node) {
                 return;
             }
 
@@ -344,23 +344,23 @@ module.exports = Ractive.extend({
 
             // the dom has been destroyed by the time the debounce
             // has happened, so just return
-            if(!div)
+            if (!div)
                 return;
 
             //console.log('snap() ', arguments);
 
             var styles = window.getComputedStyle(div);
-            var divHeight =  div.offsetHeight + parseFloat(styles.marginBottom);
+            var divHeight = div.offsetHeight + parseFloat(styles.marginBottom);
 
             var index;
 
-            if(!isNil(value)) {
+            if (!isNil(value)) {
 
                 // we're scrolling to a specific value passed in
                 index = value;
 
                 // account for > 12 hours (pm)
-                if(method == 'setHours' && value >= 12)
+                if (method == 'setHours' && value >= 12)
                     index -= 12;
 
             } else {
@@ -368,12 +368,12 @@ module.exports = Ractive.extend({
                 index = Math.round(startY / divHeight);
             }
 
-            if(index >= node.children.length)
+            if (index >= node.children.length)
                 index = node.children.length - 1;
 
             div = node.children[index];
 
-            var endY = div.offsetTop - divHeight - parseFloat(styles.marginTop)/2 - parseFloat(styles.marginBottom)/2;
+            var endY = div.offsetTop - divHeight - parseFloat(styles.marginTop) / 2 - parseFloat(styles.marginBottom) / 2;
             //var endY = divHeight*index + parseFloat(styles.marginBottom)/4;
             var deltaY = endY - startY;
 
@@ -381,24 +381,24 @@ module.exports = Ractive.extend({
             // from the scroll event handler
             // but don't block is we're calling it direclty
             // with a value
-            if(animating[method] && isNil(value))
+            if (animating[method] && isNil(value))
                 return;
 
             animating[method] = animate({
                 duration: 0.3,
-                step: function(p) {
-                    node.scrollTop = startY+deltaY*p;
+                step: function (p) {
+                    node.scrollTop = startY + deltaY * p;
                 },
-                complete: function() {
+                complete: function () {
                     var editing = self.get('editing').replace('time', '') || 'date';
                     var date = self.get(editing);
 
                     var value = parseInt(div.textContent);
 
-                    if(method == 'setHours') {
-                        if(meridiem(value) == 'pm' && value !== 12)
+                    if (method == 'setHours') {
+                        if (meridiem(value) == 'pm' && value !== 12)
                             value += 12;
-                        if(meridiem(value) == 'am' && value == 12)
+                        if (meridiem(value) == 'am' && value == 12)
                             value = 0;
                     }
 
@@ -419,22 +419,22 @@ module.exports = Ractive.extend({
         updateTimeEditors = debounce(updateTimeEditors, 10);
 
         // update scroll positions of clock editors when first viewed
-        self.observe('editing', updateTimeEditors, {init: false, defer:true});
+        self.observe('editing', updateTimeEditors, { init: false, defer: true });
         // update scroll positions of clock editors when date changes
-        self.observe('date', updateTimeEditors, {init: false});
+        self.observe('date', updateTimeEditors, { init: false });
 
         function updateTimeEditors() {
 
-            if(self.get('editing').indexOf('time') < 0)
+            if (self.get('editing').indexOf('time') < 0)
                 return;
 
-            for(var key in animating)
-                if(animating[key])
+            for (var key in animating)
+                if (animating[key])
                     return;
 
             var editing = self.get('editing').replace('time', '') || 'date';
             var date = self.get(editing);
-            
+
             snap(self.find('.clock .hours'), 'setHours', date.getHours());
             snap(self.find('.clock .minutes'), 'setMinutes', date.getMinutes());
         }
@@ -442,11 +442,11 @@ module.exports = Ractive.extend({
 
         var debouncedSnap = debounce(snap, 250);
 
-        self.on('clockwheel', function(details, method) {
+        self.on('clockwheel', function (details, method) {
             var event = details.original;
 
-            for(var key in animating)
-                if(animating[key].cancel)
+            for (var key in animating)
+                if (animating[key].cancel)
                     animating[key].cancel()
 
             animating = {};
@@ -457,9 +457,9 @@ module.exports = Ractive.extend({
     },
 
     // prevent computation errors for weird
-    date: function() {
+    date: function () {
         var d = this.get('date');
-        if(d instanceof Date)
+        if (d instanceof Date)
             return d;
     }
 
