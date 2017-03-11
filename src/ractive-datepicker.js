@@ -369,9 +369,32 @@ module.exports = Ractive.extend({
                 return;
             var styles = window.getComputedStyle(self.find('.editor'));
             var offset = parseInt(styles.paddingTop, 10);
-            console.info(offset);
-            offset = -offset;
-            element.scrollTop = active.offsetTop - element.offsetHeight / 2 + active.clientHeight / 2 + offset;
+            var target = active.offsetTop - element.offsetHeight / 2 + active.clientHeight / 2 - offset;
+            var len = actives[1].offsetTop - actives[0].offsetTop;
+            target = (target % len) + len;
+            smooth(100, element, target);
+        }
+
+        function smooth(scrollDuration, element, target) {
+            var steps = 0;
+            var maxSteps = (scrollDuration / 15);
+            var scrollMargin = 0;
+            var scrollStep = Math.PI / maxSteps;
+            var cosParameter = (target - element.scrollTop) / 2;
+            var pos = element.scrollTop;
+
+            var scrollInterval = setInterval(function () {
+                steps++;
+                if (steps >= maxSteps || Math.abs(element.scrollTop - target) < 0.5) {
+                    clearInterval(scrollInterval);
+                    element.scrollTop = target;
+                    return;
+                }
+                else {
+                    scrollMargin = cosParameter - cosParameter * Math.cos(steps * scrollStep);
+                    element.scrollTop = pos + scrollMargin;
+                }
+            }, 15);
         }
 
         function snap(node, method, value) {
@@ -394,9 +417,24 @@ module.exports = Ractive.extend({
 
         var debouncedSnap = debounce(snap, 250);
 
+        function fixOverscroll(selector) {
+            var element = self.find(selector);
+            var actives = self.findAll(selector + ' .active');
+            var len = actives[1].offsetTop - actives[0].offsetTop;
+            if (element.scrollTop >= (len) * 2) {
+                element.scrollTop -= len;
+            }
+            else if (element.scrollTop <= len) {
+                element.scrollTop += len;
+            }
+        }
+
         self.on('wheel', function (details, method) {
             var event = details.original;
-
+            if (method == 'setYear') fixOverscroll('.years');
+            if (method == 'setHours') fixOverscroll('.hours');
+            if (method == 'setMinutes') fixOverscroll('.minutes');
+            /*
             if (method == 'setHours') {
                 var hours = self.find('.hours');
                 var actives = self.findAll('.hours .active');
@@ -417,6 +455,7 @@ module.exports = Ractive.extend({
                     minutes.scrollTop = minutes.scrollTop + (act[1].offsetTop - act[0].offsetTop);
                 }
             }
+            */
             debouncedSnap(details.node, method);
         });
 
