@@ -1,17 +1,25 @@
 <div class='ractive-datepicker {{class}}' style='{{style}}'>
 
+
     {{#unless showHeader===false}}
-    <div class='header' class-range='{{range}}'>
+    <div class="header-year show-in-compact">
+        {{#if range}}
+        <span class='show-in-compact'>{{year(start)}}</span> -
+        <span class='show-in-compact'>{{end && year(end)}}</span> {{else}}
+        <span class='show-in-compact'>{{year(date)}}</span> {{/if}}
+    </div>
+    {{/unless}} {{#unless showHeader===false}}
+    <div class='header {{this["weekday-format"]}}' class-range='{{range}}'>
 
         {{#if range}}
 
-        <label>Start</label>
+        <label class="hide-in-compact">Start</label>
 
         <div class='date' class-active='{{editing=="date"}}' on-click='set("editing", "date")'>
-            <div class='year'>
+            <div class='year hide-in-compact'>
                 {{year(start)}}
             </div>
-            <span class='weekday'>{{weekday(start)}},</span>
+            <span class='weekday'>{{weekday(start)}}<span class="show-in-compact">,</span></span>
             <div>{{month(start)}} {{start && start.getDate()}}</div>
         </div>
 
@@ -23,13 +31,13 @@
 
         <br/>
 
-        <label>End</label>
+        <label class="hide-in-compact">End</label>
 
         <div class='date' class-active='{{editing=="date" || editing == "year"}}' on-click='set("editing", "date")'>
-            <div class='year'>
+            <div class='year hide-in-compact'>
                 {{end && year(end)}}
             </div>
-            <span class='weekday'>{{end && weekday(end) + ',' || '---'}}</span>
+            <span class='weekday'>{{end && weekday(end) || '---'}}<span class="show-in-compact">,</span></span>
             <div>{{end && month(end)}} {{end && end.getDate()}}</div>
         </div>
 
@@ -40,10 +48,11 @@
         {{/if}} {{else}}
 
         <div class='date' class-active='{{editing=="date" || editing == "year"}}' on-click='set("editing", "date")'>
-            <div class='year'>
+            <div class='year hide-in-compact'>
                 {{year(date)}}
             </div>
-            <span class='weekday'>{{weekday(date)}},</span>
+            <span class='weekday show-in-compact'>{{weekdayShort(date)}},</span>
+            <span class='weekday hide-in-compact'>{{weekday(date)}}</span>
             <div>{{month(date)}} {{date instanceof Date ? date.getDate() : "" }}</div>
         </div>
 
@@ -58,9 +67,9 @@
 
     <div class='editor'>
         {{#if editing.indexOf('year') > -1}}
-        <div class='years'>
-            {{#with @this.get(editing.replace("year", "") || "date") as editing}} {{#years}}
-            <div {{#if year(editing)==this}}class='active' {{/if}} on-click='setYear'>
+        <div class='years' on-wheel-touchmove='wheel:setYear'>
+            {{#with @this.get(editing.replace("year", "") || "date") as editing}} {{#years:i}}
+            <div class="{{ year(editing)==this ? 'active' : '' }}" on-click='fixYear'>
                 {{this}}
             </div>
             {{/}} {{/with}}
@@ -104,39 +113,24 @@
         </div>
         {{/}} {{/if}}
     </div>
+</div>{{elseif editing.indexOf('time') > -1}}
+<div class="clock">
+    <div class='hours' on-wheel-touchmove='wheel:setHours'>
+        {{#with @this.get(editing.replace("time", "") || "date") as editing}} {{#hours}}
+        <div {{#if hour(editing)==this}}class='active' {{/if}} on-click='setHours'>
+            {{this}}
+        </div>
+        {{/}} {{/with}}
+    </div>
+    <div class='minutes' on-wheel-touchmove='wheel:setMinutes'>
+        {{#with @this.get(editing.replace("time", "") || "date") as editing}} {{#minutes}}
+        <div {{#if minute(editing)==this}}class='active' {{/if}} on-click='setMinutes'>
+            {{this}}
+        </div>
+        {{/}} {{/with}}
+    </div>
 </div>
-
-
-{{elseif editing.indexOf('time') > -1}}
-
-<div class='clock'>
-
-    {{#with meridiem(@this.get(editing.replace("time", ""))) as meridiem}}
-    <div class='hours' on-wheel-touchmove='clockwheel:setHours' decorator='preventOverscroll'>
-        {{#hours}}
-        <div>{{this}}</div>
-        {{/}}
-    </div>
-    <span class='colon'>:</span>
-    <div class='minutes' on-wheel-touchmove='clockwheel:setMinutes' decorator='preventOverscroll'>
-        {{#minutes}}
-        <div>{{this
-            < 10 ? '0'+this : this}}</div>
-                {{/}}
-        </div>
-        <div class='meridiem'>
-            <span class='am' class-selected='{{ meridiem == "am" }}' on-click='setMeridiem:am'>
-                        AM
-                    </span>
-            <span class='pm' class-selected='{{ meridiem == "pm" }}' on-click='setMeridiem:pm'>
-                        PM
-                    </span>
-        </div>
-        {{/with}}
-
-    </div>
-
-    {{/if}}
+{{/if}}
 </div>
 
 </div>
