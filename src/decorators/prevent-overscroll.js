@@ -1,4 +1,4 @@
-
+/*
 var win = window;
 var doc = document;
 
@@ -52,3 +52,4 @@ module.exports = function(node, instance) {
 
 
 }
+*/

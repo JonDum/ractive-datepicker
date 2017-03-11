@@ -1,78 +1,80 @@
-<div class='ractive-datepicker {{class}}'
-     style='{{style}}'>
+<div class='ractive-datepicker {{class}}' style='{{style}}'>
+
 
     {{#unless showHeader===false}}
-    <div class='header' class-range='{{range}}'>
+    <div class="header-year show-in-compact">
+        {{#if range}}
+        <span class='show-in-compact'>{{year(start)}}</span> -
+        <span class='show-in-compact'>{{end && year(end)}}</span> {{else}}
+        <span class='show-in-compact'>{{year(date)}}</span> {{/if}}
+    </div>
+    {{/unless}} {{#unless showHeader===false}}
+    <div class='header {{this["weekday-format"]}}' class-range='{{range}}'>
 
         {{#if range}}
 
-            <label>Start</label>
+        <label class="hide-in-compact">Start</label>
 
-            <div class='date' class-active='{{editing=="date"}}' on-click='set("editing", "date")'>
-                <div class='year'>
-                    {{year(start)}}
-                </div>
-                <span class='weekday'>{{weekday(start)}},</span>
-                <div>{{month(start)}} {{start && start.getDate()}}</div>
+        <div class='date' class-active='{{editing=="date"}}' on-click='set("editing", "date")'>
+            <div class='year hide-in-compact'>
+                {{year(start)}}
             </div>
+            <span class='weekday'>{{weekday(start)}}<span class="show-in-compact">,</span></span>
+            <div>{{month(start)}} {{start && start.getDate()}}</div>
+        </div>
 
-            {{#if mode == 'time' || mode == 'datetime'}}
-                <div class='time' class-active='{{editing=="starttime"}}' on-click='set("editing", "starttime")' decorator='tooltip:Edit start time'>
-                    <span>{{time(start)}}</span>
-                </div>
-            {{/if}}
-
-            <br/>
-
-            <label>End</label>
-
-            <div class='date' class-active='{{editing=="date" || editing == "year"}}' on-click='set("editing", "date")'>
-                <div class='year'>
-                    {{end && year(end)}}
-                </div>
-                <span class='weekday'>{{end && weekday(end) + ',' || '---'}}</span>
-                <div>{{end && month(end)}} {{end && end.getDate()}}</div>
-            </div>
-
-            {{#if mode == 'time' || mode == 'datetime'}}
-                <div class='time' class-active='{{editing=="endtime"}}' on-click='set("editing", "endtime")' decorator='tooltip:Edit end time'>
-                    <span>{{end && time(end)}}</span>
-                </div>
-            {{/if}}
-
-        {{else}}
-
-            <div class='date' class-active='{{editing=="date" || editing == "year"}}' on-click='set("editing", "date")'>
-                <div class='year'>
-                    {{year(date)}}
-                </div>
-                <span class='weekday'>{{weekday(date)}},</span>
-                <div>{{month(date)}} {{date instanceof Date ? date.getDate() : "" }}</div>
-            </div>
-
-            {{#if mode == 'time' || mode == 'datetime'}}
-                <div class='time' class-active='{{editing=="time"}}' on-click='set("editing", "time")' decorator='tooltip:Edit time'>
-                    <span>{{time(date)}}</span>
-                </div>
-            {{/if}}
-
+        {{#if mode == 'time' || mode == 'datetime'}}
+        <div class='time' class-active='{{editing=="starttime"}}' on-click='set("editing", "starttime")' decorator='tooltip:Edit start time'>
+            <span>{{time(start)}}</span>
+        </div>
         {{/if}}
+
+        <br/>
+
+        <label class="hide-in-compact">End</label>
+
+        <div class='date' class-active='{{editing=="date" || editing == "year"}}' on-click='set("editing", "date")'>
+            <div class='year hide-in-compact'>
+                {{end && year(end)}}
+            </div>
+            <span class='weekday'>{{end && weekday(end) || '---'}}<span class="show-in-compact">,</span></span>
+            <div>{{end && month(end)}} {{end && end.getDate()}}</div>
+        </div>
+
+        {{#if mode == 'time' || mode == 'datetime'}}
+        <div class='time' class-active='{{editing=="endtime"}}' on-click='set("editing", "endtime")' decorator='tooltip:Edit end time'>
+            <span>{{end && time(end)}}</span>
+        </div>
+        {{/if}} {{else}}
+
+        <div class='date' class-active='{{editing=="date" || editing == "year"}}' on-click='set("editing", "date")'>
+            <div class='year hide-in-compact'>
+                {{year(date)}}
+            </div>
+            <span class='weekday show-in-compact'>{{weekdayShort(date)}},</span>
+            <span class='weekday hide-in-compact'>{{weekday(date)}}</span>
+            <div>{{month(date)}} {{date instanceof Date ? date.getDate() : "" }}</div>
+        </div>
+
+        {{#if mode == 'time' || mode == 'datetime'}}
+        <div class='time' class-active='{{editing=="time"}}' on-click='set("editing", "time")' decorator='tooltip:Edit time'>
+            <span>{{time(date)}}</span>
+        </div>
+        {{/if}} {{/if}}
 
     </div>
     {{/unless}}
 
     <div class='editor'>
-    {{#if editing.indexOf('year') > -1}}
-        <div class='years'>
-            {{#with @this.get(editing.replace("year", "") || "date") as editing}}
-                {{#years}}
-                    <div {{#if year(editing)==this}}class='active'{{/if}} on-click='setYear'>
-                        {{this}}
-                    </div>
-                {{/}}
-            {{/with}}
+        {{#if editing.indexOf('year') > -1}}
+        <div class='years' on-wheel-touchmove='wheel:setYear'>
+            {{#with @this.get(editing.replace("year", "") || "date") as editing}} {{#years:i}}
+            <div class="{{ year(editing)==this ? 'active' : '' }}" on-click='fixYear'>
+                {{this}}
+            </div>
+            {{/}} {{/with}}
         </div>
-    {{elseif editing == 'date'}}
+        {{elseif editing == 'date'}}
 
         <div class='nav'>
             <div class='previous' on-click='decrementMonth'></div>
@@ -86,74 +88,49 @@
         <div class='days'>
             <div class='weekdays'>
                 {{#daysOfWeek}}
-                    <div>
-                        {{this}}
-                    </div>
+                <div>
+                    {{this}}
+                </div>
                 {{/}}
             </div>
             <div class='dates' on-mouseleave='set("ghostEnd", null)'>
-                {{#if range}}
-                    {{#with moment(start) as mStart, moment(end) as mEnd, moment(ghostEnd) as mGhostEnd}}
-                    {{#dates}}
-                        {{#with moment(this) as mThis}}
-                        <div class-start='{{ (ghostEnd || end) && mStart.isSame(this, "day") && !mStart.isSame(end, "day") }}'
-                             class-between='{{ mThis.isBetween(start, end) || mThis.isBetween(start, ghostEnd) }}'
-                             class-off='{{this.getMonth() !== current.month}}'
-                             class-end='{{ (mEnd.isSame(this, "day") || mGhostEnd.isSame(this, "day") ) && !mThis.isSame(start, "day") }}'
-                             class-ghost='{{ !mThis.isBefore(start) && (mThis.isBetween(start, ghostEnd) || mThis.isSame(ghostEnd, "day") ) && !mThis.isBetween(start, end) }}'
-                             class-selected='{{ mThis.isSame(start, "day") && !ghostEnd && !end }}'
-                             on-hover='set("ghostEnd", lastSet == "start" && mThis.isAfter(start) ? this : null)'
-                             on-click='setDate'>
-                            {{this.getDate()}}
-                        </div>
-                        {{/with}}
-                    {{/}}
-                    {{/with}}
-                {{else}}
-                    {{#dates}}
-                        <div class-selected='{{date instanceof Date &&
+                {{#if range}} {{#with moment(start) as mStart, moment(end) as mEnd, moment(ghostEnd) as mGhostEnd}} {{#dates}} {{#with moment(this)
+                as mThis}}
+                <div class-start='{{ (ghostEnd || end) && mStart.isSame(this, "day") && !mStart.isSame(end, "day") }}' class-between='{{ mThis.isBetween(start, end) || mThis.isBetween(start, ghostEnd) }}'
+                    class-off='{{this.getMonth() !== current.month}}' class-end='{{ (mEnd.isSame(this, "day") || mGhostEnd.isSame(this, "day") ) && !mThis.isSame(start, "day") }}'
+                    class-ghost='{{ !mThis.isBefore(start) && (mThis.isBetween(start, ghostEnd) || mThis.isSame(ghostEnd, "day") ) && !mThis.isBetween(start, end) }}'
+                    class-selected='{{ mThis.isSame(start, "day") && !ghostEnd && !end }}' on-hover='set("ghostEnd", lastSet == "start" && mThis.isAfter(start) ? this : null)'
+                    on-click='setDate'>
+                    {{this.getDate()}}
+            </div>
+            {{/with}} {{/}} {{/with}} {{else}} {{#dates}}
+            <div class-selected='{{date instanceof Date &&
                                                date.getFullYear() == this.getFullYear() &&
                                                date.getMonth() == this.getMonth() &&
-                                               date.getDate() == this.getDate()}}'
-                             class-off='{{this.getMonth() !== current.month}}'
-                             on-click='setDate'>
-                            {{this.getDate()}}
-                        </div>
-                    {{/}}
-                {{/if}}
-            </div>
+                                               date.getDate() == this.getDate()}}' class-off='{{this.getMonth() !== current.month}}'
+                on-click='setDate'>
+                {{this.getDate()}}
         </div>
-
-
-    {{elseif editing.indexOf('time') > -1}}
-
-        <div class='clock'>
-
-            {{#with meridiem(@this.get(editing.replace("time", ""))) as meridiem}}
-                <div class='hours' on-wheel-touchmove='clockwheel:setHours' decorator='preventOverscroll'>
-                    {{#hours}}
-                        <div>{{this}}</div>
-                    {{/}}
-                </div>
-                <span class='colon'>:</span>
-                <div class='minutes' on-wheel-touchmove='clockwheel:setMinutes' decorator='preventOverscroll'>
-                    {{#minutes}}
-                        <div>{{this < 10 ? '0'+this : this}}</div>
-                    {{/}}
-                </div>
-                <div class='meridiem'>
-                    <span class='am' class-selected='{{ meridiem == "am" }}' on-click='setMeridiem:am'>
-                        AM
-                    </span>
-                    <span class='pm' class-selected='{{ meridiem == "pm" }}' on-click='setMeridiem:pm'>
-                        PM
-                    </span>
-                </div>
-            {{/with}}
-
-        </div>
-
-    {{/if}}
+        {{/}} {{/if}}
     </div>
+</div>{{elseif editing.indexOf('time') > -1}}
+<div class="clock">
+    <div class='hours' on-wheel-touchmove='wheel:setHours'>
+        {{#with @this.get(editing.replace("time", "") || "date") as editing}} {{#hours}}
+        <div {{#if hour(editing)==this}}class='active' {{/if}} on-click='setHours'>
+            {{this}}
+        </div>
+        {{/}} {{/with}}
+    </div>
+    <div class='minutes' on-wheel-touchmove='wheel:setMinutes'>
+        {{#with @this.get(editing.replace("time", "") || "date") as editing}} {{#minutes}}
+        <div {{#if minute(editing)==this}}class='active' {{/if}} on-click='setMinutes'>
+            {{this}}
+        </div>
+        {{/}} {{/with}}
+    </div>
+</div>
+{{/if}}
+</div>
 
 </div>
