@@ -11,7 +11,10 @@ var localeStringOptions = {
 };
 
 var animate = require('./util/animate');
-var moment = require('moment');
+//var moment = require('moment');
+
+var lang = ( navigator.language || navigator.browserLanguage ).slice( 0, 2 );
+moment.lang(lang);
 
 var debounce = require('lodash/debounce');
 var isNil = require('lodash/isNil');
