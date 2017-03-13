@@ -1,21 +1,16 @@
 /*global module:false*/
 module.exports = function(grunt) {
 
-    //handles plugins
-    require('jit-grunt')(grunt);
-
+    grunt.loadNpmTasks("grunt-webpack");
+//    require('jit-grunt')(grunt);
     var webpack = require('webpack');
-
     grunt.initConfig({
 
         webpack: {
             options: require('./webpack.config.js'),
             development: {
-                debug: true,
             },
             production: {
-                debug: false,
-                production: true,
                 devtool: 'none',
                 output: {
                     pathinfo: false,
@@ -32,13 +27,17 @@ module.exports = function(grunt) {
                         }
                     }),
                     new webpack.optimize.AggressiveMergingPlugin(),
-                    new webpack.optimize.OccurenceOrderPlugin(true),
-                ]
+		    new  webpack.LoaderOptionsPlugin({
+	                options: {
+            		    stylus: {
+	                        use: [(require('nib')())]
+        	       	    }
+	                }
+        	    })
+		]
             },
         },
 
     });
-
-    grunt.registerTask('default', ['webpack:development', 'webpack:production']);
-
+   grunt.registerTask('default', ['webpack:development', 'webpack:production']);
 };
